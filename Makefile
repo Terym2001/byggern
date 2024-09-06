@@ -1,5 +1,6 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := main.c
+SOURCE_FILES := main.c \
+		usart.c
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
@@ -10,6 +11,7 @@ ifeq ($(PROGRAM_WITH_JTAG), yes)
 	PROGRAMMER := atmelice
 endif
 
+CURRENT_DIR := $(shell pwd)/headers
 BUILD_DIR := build
 TARGET_CPU := atmega162
 TARGET_DEVICE := m162
@@ -25,7 +27,7 @@ $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ -I$(CURRENT_DIR) 
 
 $(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out
