@@ -7,26 +7,31 @@
 int main(void)
 {
   USART_Init(MYUBBR);
-  unsigned char greetings[] = "Hello World!\n";
+  DDRA |= (1 << PA0);
 
   while (1)
   {
-    USART_Transmit('b');
-    //for (unsigned char *i = &greetings[0]; *i != '\0'; i++ )
-    //{
-    //  USART_Transmit(*i);
-    //}
 
-    //unsigned char c = USART_Receive();
-    //if ( c == 'b' )
-    //{
-    //  DDRA |= (1 << PD0);
-    //} else if (c == 'l')
-    //{
-    //  DDRA &= ~(1 << PD0);
-    //}
-    
-    //_delay_ms(500);
+	  unsigned char c = USART_Receive();
+	  switch(c)
+	  {
+		  case 't':
+			  printf("Setting PA0 to state %i\n\r", (PORTA & (1 << PA0)));
+			  PORTA ^= (1 << PA0);
+			  break;
+		  case 'h':
+			  printf("Turing PA0 to %i\n\r", 1);
+
+			  PORTA |= (1 << PA0);
+			  break;
+		  case 'l':
+			  printf("Setting PA0 to %i\n\r", 0);
+
+			  PORTA &= ~(1 << PA0);
+			  break;
+		 default:
+			  break;
+	  }
   }
 
   return 0;
