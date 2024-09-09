@@ -2,31 +2,42 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include <usart.h>
+#include "drivers/usart.h"
 
 int main(void)
 {
+  // Initialize uart with baud rate and frameformat
   USART_Init(MYUBBR);
-  unsigned char greetings[] = "Hello World!\n";
+
+  // Set led pin as output
+  DDRA |= (1 << PA0);
+
+  int quit = 0;
 
   while (1)
   {
-    USART_Transmit('b');
-    //for (unsigned char *i = &greetings[0]; *i != '\0'; i++ )
-    //{
-    //  USART_Transmit(*i);
-    //}
-
-    //unsigned char c = USART_Receive();
-    //if ( c == 'b' )
-    //{
-    //  DDRA |= (1 << PD0);
-    //} else if (c == 'l')
-    //{
-    //  DDRA &= ~(1 << PD0);
-    //}
-    
-    //_delay_ms(500);
+    unsigned char ch = USART_Receive();
+    switch(ch)
+    {
+      case 't':
+        printf("Toggling value at PA0\n\r");
+        PORTA ^= (1 << PA0);
+        break;
+      case 'h':
+        printf("Writing %i to PA0.\n\r", 1);
+        PORTA |= (1 << PA0);
+        break;
+      case 'l':
+        printf("Writing %i to PA0.\n\r", 0);
+        PORTA &= ~(1 << PA0);
+        break;
+      case 'Q':
+        quit = 1;
+        break;
+      default:
+        continue;
+    }
+    if (quit){break;}
   }
 
   return 0;

@@ -29,7 +29,7 @@ $(BUILD_DIR)/$(DRIVER_DIR):
 
 # Build all object files
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)/$(DRIVER_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@ -I$(INCLUDE_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out

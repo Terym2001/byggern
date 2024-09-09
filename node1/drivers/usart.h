@@ -6,12 +6,12 @@
 #define MYUBBR (F_CPU/(16UL*BAUD) - 1)
 
 #include <avr/io.h>
-#include <util/delay.h>
+#include <stdio.h>
 
 void USART_Init(unsigned int ubrr);
 
-void USART_Transmit(unsigned char data);
+int USART_Transmit(unsigned char data);
 
-unsigned char USART_Receive( void );
+int USART_Receive(void);
 
 #endif
