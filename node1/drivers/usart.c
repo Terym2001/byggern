@@ -18,6 +18,7 @@ void USART_Init(unsigned int ubrr)
   return;
 }
 
+// Might need to change to char instead of unsigned char
 int USART_Transmit(unsigned char data)
 {
   //Wait for empty transmit buffer( UDRE0 flag is set when ready )
@@ -31,7 +32,7 @@ int USART_Transmit(unsigned char data)
 int USART_Receive(void)
 {
   //Wait for data to be received 
-  while( !(UCSR0A & RXC0) );
+  while( !(UCSR0A & (1 << RXC0)) );
 
   return UDR0;
 }
