@@ -2,6 +2,7 @@ DRIVER_DIR := drivers
 
 SOURCE_FILES := main.c \
 							  $(DRIVER_DIR)/usart.c \
+								$(DRIVER_DIR)/XMEM.c
 
 PROGRAM_WITH_JTAG := yes
 
