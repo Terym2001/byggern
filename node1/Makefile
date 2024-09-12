@@ -1,8 +1,9 @@
-# List all source files to be compiled; separate with space
-SOURCE_FILES := main.c \
-		usart.c
+DRIVER_DIR := drivers
 
-# Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
+SOURCE_FILES := main.c \
+							  $(DRIVER_DIR)/usart.c \
+								$(DRIVER_DIR)/XMEM.c
+
 PROGRAM_WITH_JTAG := yes
 
 # Feel free to ignore anything below this line
@@ -11,7 +12,7 @@ ifeq ($(PROGRAM_WITH_JTAG), yes)
 	PROGRAMMER := atmelice
 endif
 
-CURRENT_DIR := $(shell pwd)/headers
+INCLUDE_DIR := $(shell pwd)/$(DRIVER_DIR)
 BUILD_DIR := build
 TARGET_CPU := atmega162
 TARGET_DEVICE := m162
@@ -23,11 +24,13 @@ OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 
 .DEFAULT_GOAL := $(BUILD_DIR)/main.hex
 
-$(BUILD_DIR):
-	mkdir $(BUILD_DIR)
+# Create build directory
+$(BUILD_DIR)/$(DRIVER_DIR): 
+	mkdir -p $(BUILD_DIR)/$(DRIVER_DIR)
 
-$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@ -I$(CURRENT_DIR) 
+# Build all object files
+$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)/$(DRIVER_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out
@@ -37,7 +40,7 @@ $(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
 flash: $(BUILD_DIR)/main.hex
 	avrdude -p $(TARGET_DEVICE) -c $(PROGRAMMER) -U flash:w:$(BUILD_DIR)/main.hex:i
 
-.PHONY: clean
+.PHONY: clean  
 clean:
 	rm -rf $(BUILD_DIR)
 
@@ -52,4 +55,4 @@ debug:
 	x-terminal-emulator -e avarice --edbg --ignore-intr :4242
 	sleep 2
 	avr-gdb -tui -iex "target remote localhost:4242" $(BUILD_DIR)/a.out
-	killall -s 9 avarice	
+	killall -s 9 avarice

@@ -1,4 +1,4 @@
-#include <usart.h>
+#include "usart.h"
 
 void USART_Init(unsigned int ubrr)
 {
@@ -12,11 +12,13 @@ void USART_Init(unsigned int ubrr)
   /* Set frame format: 8data, 2stop bit */
   UCSR0C = (1 << URSEL0) | (1 << USBS0) | (3 << UCSZ00);
 
+  // Link USART to printf
   fdevopen(&USART_Transmit, &USART_Receive);
 
   return;
 }
 
+// Might need to change to char instead of unsigned char
 int USART_Transmit(char data)
 {
   //Wait for empty transmit buffer( UDRE0 flag is set when ready )
@@ -27,7 +29,7 @@ int USART_Transmit(char data)
   return 0;
 }
 
-int USART_Receive(void)
+int USART_Receive()
 {
   //Wait for data to be received 
   while( !(UCSR0A & (1 << RXC0)) );

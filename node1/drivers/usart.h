@@ -10,6 +10,7 @@
 
 void USART_Init(unsigned int ubrr);
 
+// Might need to change to char instead of unsigned char
 int USART_Transmit(char data);
 
 int USART_Receive();
