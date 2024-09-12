@@ -1,4 +1,4 @@
-#include "XMEM.h"
+#include "xmem.h"
 
 void XMEM_Init(void)
 {

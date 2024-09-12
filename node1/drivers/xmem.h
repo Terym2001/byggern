@@ -2,10 +2,9 @@
 #define _XMEM_H
 
 #include <avr/io.h>
-#include <util/delay.h>
 
 // Not sure about this one
-#define BASE_ADDRESS 0x1000
+#define BASE_ADDRESS 0x1800
 
 void XMEM_Init(void);
 

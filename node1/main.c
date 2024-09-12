@@ -3,42 +3,51 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "drivers/usart.h"
+#include "drivers/xmem.h"
+#include "test/sram_test.h"
 
 int main(void)
 {
   // Initialize uart with baud rate and frameformat
-  USART_Init(MYUBBR);
+  USART_Init(MYUBRR);
 
-  // Set led pin as output
-  DDRA |= (1 << PA0);
+  // Initialize external memory
+  XMEM_Init();
 
-  int quit = 0;
 
-  while (1)
-  {
-    unsigned char ch = USART_Receive();
-    switch(ch)
+  //while (1)
+  //{  
+    uint16_t seed = rand();
+
+    //SRAM_test();
+    srand(seed);
+    for (int i = 0; i < 800; i++)
     {
-      case 't':
-        printf("Toggling value at PA0\n\r");
-        PORTA ^= (1 << PA0);
-        break;
-      case 'h':
-        printf("Writing %i to PA0.\n\r", 1);
-        PORTA |= (1 << PA0);
-        break;
-      case 'l':
-        printf("Writing %i to PA0.\n\r", 0);
-        PORTA &= ~(1 << PA0);
-        break;
-      case 'Q':
-        quit = 1;
-        break;
-      default:
-        continue;
+      uint8_t some_value = rand();
+      XMEM_Write(some_value, (uint16_t) i);
+      uint8_t value = XMEM_Read((uint16_t) i);
+
+      if (some_value != value)
+      {
+        printf("WRITE ERROR: ext_mem[%u] = %u (should be: %u)\n\r", i, value, some_value);
+      }
     }
-    if (quit){break;}
-  }
+    printf("Done with writing!!\n\r");
+
+    srand(seed);
+    for (int i = 0; i < 800; i++)
+    {
+      uint8_t some_value = rand();
+      uint8_t value = XMEM_Read((uint16_t) i);
+
+      if (some_value != value)
+      {
+        printf("READ_ERROR: ext_mem[%u] = %u (should be: %u)\n\r", i, value, some_value);
+      }
+    }
+    _delay_ms(10);
+    printf("Done with reading!!\n\r");
+  //}
 
   return 0;
 }
