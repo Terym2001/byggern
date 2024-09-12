@@ -3,7 +3,6 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include "../macros/bit_macros.h"
 
 // Not sure about this one
 #define BASE_ADDRESS 0x1000
