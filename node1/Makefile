@@ -14,7 +14,6 @@ ifeq ($(PROGRAM_WITH_JTAG), yes)
 	PROGRAMMER := atmelice
 endif
 
-INCLUDE_DIR := $(shell pwd)/$(DRIVER_DIR)
 BUILD_DIR := build
 TARGET_CPU := atmega162
 TARGET_DEVICE := m162

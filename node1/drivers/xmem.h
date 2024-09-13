@@ -3,7 +3,6 @@
 
 #include <avr/io.h>
 
-// Not sure about this one
 #define BASE_ADDRESS 0x1800
 
 void XMEM_Init(void);

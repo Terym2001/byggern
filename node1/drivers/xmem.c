@@ -6,7 +6,7 @@ void XMEM_Init(void)
   MCUCR |= (1 << SRE);
 
   // PC7-PC4 Released as normal pins when external memory is enabled
-  SFIOR |= (1 << XMM2);
+  SFIOR |= (4 << XMM0);
 
   // TODO
 
