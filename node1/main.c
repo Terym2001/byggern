@@ -14,40 +14,38 @@ int main(void)
   // Initialize external memory
   XMEM_Init();
 
-
   //while (1)
   //{  
-    uint16_t seed = rand();
+  uint16_t seed = rand();
 
     //SRAM_test();
-    srand(seed);
-    for (int i = 0; i < 800; i++)
+  srand(seed);
+  for (int i = 0; i < 800; i++)
+  {
+    uint8_t some_value = rand();
+    XMEM_Write(some_value, (uint16_t) i);
+    uint8_t value = XMEM_Read((uint16_t) i);
+
+    if (some_value != value)
     {
-      uint8_t some_value = rand();
-      XMEM_Write(some_value, (uint16_t) i);
-      uint8_t value = XMEM_Read((uint16_t) i);
-
-      if (some_value != value)
-      {
-        printf("WRITE ERROR: ext_mem[%u] = %u (should be: %u)\n\r", i, value, some_value);
-      }
+      printf("WRITE ERROR: ext_mem[%u] = 0x%X (should be: 0x%X)\n\r", i, value, some_value);
     }
-    printf("Done with writing!!\n\r");
+  }
+  printf("Done with writing!!\n\r");
 
-    srand(seed);
-    for (int i = 0; i < 800; i++)
+  srand(seed);
+  for (int i = 0; i < 800; i++)
+  {
+    uint8_t some_value = rand();
+    uint8_t value = XMEM_Read((uint16_t) i);
+
+    if (some_value != value)
     {
-      uint8_t some_value = rand();
-      uint8_t value = XMEM_Read((uint16_t) i);
-
-      if (some_value != value)
-      {
-        printf("READ_ERROR: ext_mem[%u] = %u (should be: %u)\n\r", i, value, some_value);
-      }
+      printf("READ_ERROR: ext_mem[%u] = 0x%X (should be: 0x%X)\n\r", i, value, some_value);
     }
-    _delay_ms(10);
-    printf("Done with reading!!\n\r");
-  //}
+  }
+  printf("Done with reading!!\n\r");
+//}
 
   return 0;
 }
