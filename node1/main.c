@@ -12,40 +12,28 @@ int main(void)
   USART_Init(MYUBRR);
 
   // Initialize external memory
-  XMEM_Init();
+  //XMEM_Init();
+
+  DDRA |= (1 << PA0) | (1 << PA1) | (1 << PA2) | (1 << PA3);
+
+  DDRE |= (1 << PE1);
+  PORTE |= (1 << PE1);
+
+  PORTA |= (1 << PA0) | (1 << PA1) | (1 << PA2) | (1 << PA3);
+
+  _delay_ms(15000);
+
+  PORTE &= ~(1 << PE1);
+
+  PORTA &=  ~(1 << PA0) | ~(1 << PA1) | ~(1 << PA2) | ~(1 << PA3);
+
+  while (1) {}
+
 
   //while (1)
-  //{  
-  uint16_t seed = rand();
-
-    //SRAM_test();
-  srand(seed);
-  for (int i = 0; i < 800; i++)
-  {
-    uint8_t some_value = rand();
-    XMEM_Write(some_value, (uint16_t) i);
-    uint8_t value = XMEM_Read((uint16_t) i);
-
-    if (some_value != value)
-    {
-      printf("WRITE ERROR: ext_mem[%u] = 0x%X (should be: 0x%X)\n\r", i, value, some_value);
-    }
-  }
-  printf("Done with writing!!\n\r");
-
-  srand(seed);
-  for (int i = 0; i < 800; i++)
-  {
-    uint8_t some_value = rand();
-    uint8_t value = XMEM_Read((uint16_t) i);
-
-    if (some_value != value)
-    {
-      printf("READ_ERROR: ext_mem[%u] = 0x%X (should be: 0x%X)\n\r", i, value, some_value);
-    }
-  }
-  printf("Done with reading!!\n\r");
-//}
+  //{
+  //  XMEM_Write(0xFF, 0xFFFF); 
+  //}
 
   return 0;
 }
