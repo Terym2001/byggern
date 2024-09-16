@@ -14,7 +14,18 @@ int main(void)
   // Initialize external memory
   XMEM_Init();
 
-  SRAM_test(); 
+  while(1)
+  {
+    XMEM_Write(0xFF, 0xFFFF);
+    _delay_ms(5000);
 
+    XMEM_Write(0xFF, 0x12FF);
+    _delay_ms(5000);
+
+    XMEM_Write(0xFF, 0x14FF);
+    _delay_ms(5000);
+
+  }
+  
   return 0;
 }
