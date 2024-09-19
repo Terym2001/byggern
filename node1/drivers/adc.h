@@ -23,4 +23,6 @@ uint8_t ADC_ReadChannel(uint8_t channel);
 // Read aall channels and return array
 uint8_t* ADC_ReadAll();
 
+void ADC_ExternalClock();
+
 #endif
