@@ -2,10 +2,12 @@
 #define ADC_H_H
 
 #include <stdint.h>
+#include <avr/io.h>
+#include <util/delay.h>
 #include <stdio.h>
-#include <time.h>
+#include "xmem.h"
 
-#define ADC_CLOCK_F 2500000UL
+#define ADC_CLOCK_F 4915200UL
 #define N_CHANNELS 4UL 
 #define FCONV ((9UL * N_CHANNELS * 2UL)/ADC_CLOCK_F) //Fconv in ms
 
@@ -19,6 +21,8 @@
 
 void ADC_InitializeExternalClock(void);
 
-uint8_t ADC_ReadChannel(volatile uint16_t channel);
+void ADC_Init(void);
+
+void ADC_Read(uint8_t* data);
 
 #endif
