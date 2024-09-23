@@ -1,5 +1,46 @@
 #include "adc.h"
 
+void ADC_InitializeExternalClock(void)
+{
+  // Set PWM signal on pin PD4 as output
+  DDRD |= (1 << PD4);
+
+  // Set pin to CTC mode
+  TCCR3A |= (1 << WGM31);
+  TCCR3A &= ~(1 << WGM30);
+
+  // Set PWM toggle on match with internal clock
+  TCCR3A &= ~(1 << COM3A1);
+  TCCR3A |= (1 << COM3A0);
+
+  // Set clock source with no prescaling 
+  TCCR3B &= (1 << CS32); 
+  TCCR3B &= (1 << CS31);
+  TCCR3B |= (1 << CS30);
+
+  // Set frequency to 0.5 * FCLOCK
+  OCR0 = 0;
+
+  return;
+}
+
+uint8_t ADC_ReadChannel(uint16_t channel)
+{
+  if (channel > N_CHANNELS)
+  {
+    printf("ERROR-ADC: channel must not exceed %u!\n\r", N_CHANNELS); 
+    return 0;
+  }
+
+  XMEM_Write(channel, channel, ADC_BASE_ADDRESS);
+
+  _delay_us(FCONV);
+
+  uint8_t data = XMEM_Read(channel, ADC_BASE_ADDRESS);
+
+  return data;
+}
+
 // time_t prevTime = 0;
 // uint8_t ADC_ReadChannel(volatile uint16_t channel)
 // {
@@ -36,10 +77,4 @@
 //   } 
 // }
 
-uint8_t ADC_ReadChannel(uint16_t channel)
-{
-  XMEM_Write(0x00, channel, ADC_BASE_ADDRESS);
-  _delay_us(FCONV);
-  XMEM_Read(ADC_BASE_ADDRESS);
-  return
-}
+

@@ -7,7 +7,7 @@
 
 #define ADC_CLOCK_F 2500000UL
 #define N_CHANNELS 4UL 
-#define FCONV ((9UL * N_CHANNELS * 2UL)/ADC_CLOCK_F * 1000000UL) //Fconv in us
+#define FCONV ((9UL * N_CHANNELS * 2UL)/ADC_CLOCK_F) //Fconv in ms
 
 #define ADC_BASE_ADDRESS 0x1400
 #define ADC_MAX_ADDRESS 0x03FF
@@ -17,14 +17,8 @@
 #define JOYSTICK_Y 0x1401
 #define JOYSTICK_PRESS 0x1402
 
+void ADC_InitializeExternalClock(void);
+
 uint8_t ADC_ReadChannel(volatile uint16_t channel);
-
-// TODO
-// Read aall channels and return array
-uint8_t* ADC_ReadAll();
-
-void ADC_ExternalClock();
-
-void ADC_Clock(); //TODO:Implement this with using hardware prescaler 
 
 #endif
