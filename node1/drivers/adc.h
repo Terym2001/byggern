@@ -19,10 +19,37 @@
 #define JOYSTICK_Y 0x1401
 #define JOYSTICK_PRESS 0x1402
 
+struct CalibrateADC
+{
+  uint8_t xValue;
+  uint8_t yValue;
+};
+
+struct JoystickPosition
+{
+    int8_t xPercent;
+    int8_t yPercent;
+};
+
+enum JoystickDirection
+{
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN,
+    NEUTRAL
+};
+
 void ADC_InitializeExternalClock(void);
 
 void ADC_Init(void);
 
-void ADC_Read(uint8_t* data);
+void ADC_Read(uint8_t* data, struct CalibrateADC* cal);
+
+void ADC_Calibrator(struct CalibrateADC* cal);
+
+void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPosition* Jpos);
+
+enum JoystickDirection ADC_GetJoystickDirection(uint8_t xRaw, uint8_t yRaw);
 
 #endif
