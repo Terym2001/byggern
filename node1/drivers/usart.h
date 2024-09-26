@@ -1,9 +1,9 @@
 #ifndef _USART_H_
 #define _USART_H_
 
-#define F_CPU 4915200UL
+#define FOSC 4915200UL
 #define BAUD 9600UL    // Baud rate
-#define MYUBBR (F_CPU/(16UL*BAUD) - 1UL)
+#define MYUBRR (FOSC/(16UL*BAUD) - 1UL)
 
 #include <avr/io.h>
 #include <stdio.h>

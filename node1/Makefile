@@ -1,8 +1,12 @@
 DRIVER_DIR := drivers
+TEST_DIR := test
 
 SOURCE_FILES := main.c \
 							  $(DRIVER_DIR)/usart.c \
-								$(DRIVER_DIR)/XMEM.c
+								$(DRIVER_DIR)/xmem.c  \
+								$(DRIVER_DIR)/sram.c  \
+								$(DRIVER_DIR)/adc.c  \
+								#$(TEST_DIR)/sram_test.c
 
 PROGRAM_WITH_JTAG := yes
 
@@ -12,7 +16,6 @@ ifeq ($(PROGRAM_WITH_JTAG), yes)
 	PROGRAMMER := atmelice
 endif
 
-INCLUDE_DIR := $(shell pwd)/$(DRIVER_DIR)
 BUILD_DIR := build
 TARGET_CPU := atmega162
 TARGET_DEVICE := m162
@@ -27,6 +30,7 @@ OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 # Create build directory
 $(BUILD_DIR)/$(DRIVER_DIR): 
 	mkdir -p $(BUILD_DIR)/$(DRIVER_DIR)
+	mkdir $(BUILD_DIR)/$(TEST_DIR)
 
 # Build all object files
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)/$(DRIVER_DIR)
