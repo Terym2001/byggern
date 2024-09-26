@@ -1,11 +1,7 @@
-#define F_CPU 4915200UL
-
-#include <avr/io.h>
-#include <util/delay.h>
-
-#include "drivers/adc.h"
-#include "drivers/sram.h"
+#include "main.h"
+#include "drivers/oled.h"
 #include "drivers/usart.h"
+#include "drivers/xmem.h"
 
 int main(void) {
   // Initialize uart with baud rate and frameformat
@@ -14,37 +10,14 @@ int main(void) {
   // Initialize external memory
   XMEM_Init();
 
-  ADC_Init();
+  // Initialize OLED 
+  OLED_Init();
 
-  struct CalibrateADC calc;
-  struct JoystickPositionPercent position;
-  struct ADCValues data;
+  uint8_t alpha[8] = {0b00111110,0b01111111,0b01000001,0b01011101,0b01011101,0b00011111,0b00011110,0b00000000};
 
-  ADC_Calibrator(&calc);
-  // _delay_ms(5000);
-  while (1) {
-    ADC_Read(&data, &calc);
-    printf("LS: %d, RS: %d            \r", data.leftSlider, data.rightSlider);
-    // enum JoystickDirection direction = ADC_GetJoystickDirection(data.xRaw, data.yRaw);
-
-    // // Print direction
-    // switch (direction) {
-    //   case LEFT:
-    //     printf("Joystick Direction: LEFT      \r");
-    //     break;
-    //   case RIGHT:
-    //     printf("Joystick Direction: RIGHT     \r");
-    //     break;
-    //   case UP:
-    //     printf("Joystick Direction: UP        \r");
-    //     break;
-    //   case DOWN:
-    //     printf("Joystick Direction: DOWN      \r");
-    //     break;
-    //   case NEUTRAL:
-    //     printf("Joystick Direction: NEUTRAL   \r");
-    //     break;
-    // }
+  for (int i = 0; i < 8; i++)
+  {
+    OLED_WriteData(alpha[i]);
   }
 
   return 0;

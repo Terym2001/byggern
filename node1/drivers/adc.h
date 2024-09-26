@@ -1,11 +1,8 @@
 #ifndef ADC_H_H
 #define ADC_H_H
 
+#include "../main.h"
 #include "xmem.h"
-#include <avr/io.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <util/delay.h>
 
 #define ADC_CLOCK_F 4915200UL
 #define N_CHANNELS 4UL
