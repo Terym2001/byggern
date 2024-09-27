@@ -130,14 +130,13 @@ void OLED_HighlightPage(struct OLEDPosition *position, uint8_t page)
 
   return;
 }
-
-void OLED_Home(struct OLEDPosition *position)
+void OLED_SubScreen(struct OLEDPosition *position)
 {
   OLED_ClearScreen(position);
 
-  OLED_PrintString(position, "Play Game!\n\n");
-  OLED_PrintString(position, "Secret game!\n\n");
-  OLED_PrintString(position, "Otions\n\n");
+  OLED_PrintString(position, "Some new string! \n\n");
+  OLED_PrintString(position, "Some other new string! \n\n");
+  OLED_PrintString(position, "Secret \n\n");
 
   OLED_GotoPage(position, 1);
 
@@ -146,11 +145,13 @@ void OLED_Home(struct OLEDPosition *position)
   enum JoystickDirection direction = NEUTRAL;
 
   ADC_Calibrator(&cal);
-
+  //Function pointer to start new sub-menu
+  void (*ChangeScreen)(struct OLEDPosition *position);
+  ChangeScreen = NULL;
   while (1)
   {
     ADC_Read(&adc_values, &cal);       
-    direction = ADC_GetJoystickDirection(adc_values.xRaw, adc_values.yRaw);
+    direction = ADC_GetJoystickDirection(adc_values.xRaw, adc_values.yRaw,adc_values.leftSlider); //TODO: Change name of adc_values 
     switch(direction)
     {
       case UP:
@@ -169,8 +170,76 @@ void OLED_Home(struct OLEDPosition *position)
         printf("DOWN\n");
         OLED_HighlightPage(position, position->page);
         break;
+      case PRESSED:
+        ChangeScreen = OLED_Home;
+        printf("Changing back to Home \n");
+        _delay_ms(5000); //TODO: This can be removed when it checks btn
       default:
         break;
+    }
+      // Call the function if the function pointer has been set
+    if (ChangeScreen != NULL)
+    {
+      ChangeScreen(position);  // Call OLED_SubScreen
+      return;  // Exit the current loop after changing the screen
+    }
+    _delay_ms(500);
+  }
+}
+
+void OLED_Home(struct OLEDPosition *position)
+{
+  OLED_ClearScreen(position);
+
+  OLED_PrintString(position, "Play Game!\n\n");
+  OLED_PrintString(position, "Secret game!\n\n");
+  OLED_PrintString(position, "Otions\n\n");
+
+  OLED_GotoPage(position, 1);
+
+  struct CalibrateADC cal = {0};
+  struct ADCValues adc_values = {0};
+  enum JoystickDirection direction = NEUTRAL;
+
+  ADC_Calibrator(&cal);
+  //Function pointer to start new sub-menu
+  void (*ChangeScreen)(struct OLEDPosition *position);
+  ChangeScreen = NULL;
+  while (1)
+  {
+    ADC_Read(&adc_values, &cal);       
+    direction = ADC_GetJoystickDirection(adc_values.xRaw, adc_values.yRaw,adc_values.leftSlider); //TODO: Change name of adc_values 
+    switch(direction)
+    {
+      case UP:
+        if (position->page > 1)
+        {
+          position->page -= 2; 
+        }
+        printf("UP\n");
+        OLED_HighlightPage(position, position->page);
+        break;
+      case DOWN:
+        if (position->page < 4)
+        {
+          position->page += 2;
+        }
+        printf("DOWN\n");
+        OLED_HighlightPage(position, position->page);
+        break;
+      //TODO:Implement so that this only happens when we are at correct page
+      case PRESSED:
+        ChangeScreen = OLED_SubScreen;
+        printf("Changing to subscreen \n");//TODO: This can be removed when it checks btn
+         _delay_ms(5000);
+      default:
+        break;
+    }
+     // Call the function if the function pointer has been set
+    if (ChangeScreen != NULL)
+    {
+      ChangeScreen(position);  // Call OLED_SubScreen
+      return;  // Exit the current loop after changing the screen
     }
     _delay_ms(500);
   }

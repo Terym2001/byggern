@@ -49,6 +49,7 @@ void OLED_PrintChar(struct OLEDPosition *position, char chr);
 
 void OLED_PrintString(struct OLEDPosition *position, char* string);
 
+void OLED_SubScreen(struct OLEDPosition *position);
 // TODO: Implenment
 void OLED_Reset(struct OLEDPosition *position);
 
