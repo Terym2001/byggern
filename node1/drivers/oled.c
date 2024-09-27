@@ -1,4 +1,5 @@
 #include "oled.h"
+#include "adc.h"
 
 void OLED_WriteCommand(volatile char command)
 {
@@ -14,7 +15,36 @@ void OLED_WriteData(volatile char data)
   return;
 }
 
-void OLED_Init(void)
+void OLED_GotoPage(struct OLEDPosition *position, uint8_t page)
+{
+  position->page = page;
+  OLED_WriteCommand(0xB0 + page);
+  return;
+}
+
+void OLED_ClearPage(struct OLEDPosition *position, uint8_t page)
+{
+  OLED_GotoPage(position, page);
+  OLED_GotoSegment(position, 0);
+  for (int i = 0; i <= SEGMENT_END; i++)
+  {
+    OLED_WriteData(0x00);
+  }
+  position->segment = SEGMENT_START;
+  return;
+}
+
+void OLED_ClearScreen(struct OLEDPosition *position)
+{
+  for (int i = 0; i < 8; i++)
+  {
+    OLED_ClearPage(position, i);
+  }
+  OLED_GotoPage(position, 0);
+  return;
+}
+
+void OLED_Init(struct OLEDPosition *position)
 {
   OLED_WriteCommand(0xAE); // Turn off Display (RESET)
 
@@ -27,11 +57,9 @@ void OLED_Init(void)
   OLED_WriteCommand(0x20); // Set Memory Addressing Mode
   OLED_WriteCommand(0x02); // Page addressing mode 
 
-  // Set start seg to 3
-  OLED_WriteCommand(0x00); // Set Lower Column Start Address for Page Addressing Mode
-
-  // Set start com to 16
-  OLED_WriteCommand(0x10); // Set Higher Column Start Address for Page Addressing Mode
+  // Set start seg to 0
+  OLED_WriteCommand(0x00 + (SEGMENT_START & 0x0F)); // Set Lower Column Start Address for Page Addressing Mode
+  OLED_WriteCommand(0x10 + (SEGMENT_START >> 4)); // Set Higher Column Start Address for Page Addressing Mode
 
   // set start page to 0 
   OLED_WriteCommand(0xB0); // Set Page Start Address for Page Addressing Mode
@@ -40,33 +68,111 @@ void OLED_Init(void)
   
   OLED_WriteCommand(0xAF); // Turn on Display
 
-  OLED_ClearScreen();
-  
+  OLED_ClearScreen(position);
+
   return;
 }
 
-void OLED_GotoPage(uint8_t page)
+void OLED_GotoSegment(struct OLEDPosition *position, uint8_t segment)
 {
-  OLED_WriteCommand(0xB0 + page);
+  position->segment = segment;
+  OLED_WriteCommand(0x00 + (segment & 0x0F));
+  OLED_WriteCommand(0x10 + (segment >> 4));
   return;
 }
 
-void OLED_ClearPage(uint8_t page)
+void OLED_PrintChar(struct OLEDPosition *position, char chr)
 {
-  OLED_GotoPage(page);
-  for (int i = 0; i < 128; i++)
+  for (uint8_t i = 0; i < 5; i++)
   {
-    OLED_WriteData(0x00);
+    char byte = pgm_read_byte(&font5[chr - FONT_OFFSET][i]);
+    OLED_WriteData(byte);
+    position->segment++;
+    position->segment = (position->segment > 127) ? 0 : position->segment;
   }
   return;
 }
 
-void OLED_ClearScreen()
+void OLED_PrintString(struct OLEDPosition *position, char *str)
 {
-  for (int i = 0; i < 8; i++)
+  while (*str != '\0')
   {
-    OLED_ClearPage(i);
+    switch (*str)
+    {
+      case '\n':
+        OLED_GotoPage(position, position->page + 1);
+        OLED_GotoSegment(position, SEGMENT_START);
+        break;
+      default:
+        OLED_PrintChar(position, *str);
+        break;
+    }
+    str++;
+    }
+  return;
+}
+
+void OLED_HighlightPage(struct OLEDPosition *position, uint8_t page)
+{
+  // clear line
+  OLED_GotoSegment(position, 0);
+  for (int i = 0; i < 127; i++)
+  {
+    OLED_WriteData(0b00000000);
   }
-  OLED_GotoPage(0);
+
+  OLED_GotoSegment(position, 0);
+  OLED_GotoPage(position, page);
+  for (int i = 0; i < 127; i++)
+  {
+    OLED_WriteData(0b00000001);
+  }
+
+  return;
+}
+
+void OLED_Home(struct OLEDPosition *position)
+{
+  OLED_ClearScreen(position);
+
+  OLED_PrintString(position, "Play Game!\n\n");
+  OLED_PrintString(position, "Secret game!\n\n");
+  OLED_PrintString(position, "Otions\n\n");
+
+  OLED_GotoPage(position, 1);
+
+  struct CalibrateADC cal = {0};
+  struct ADCValues adc_values = {0};
+  enum JoystickDirection direction = NEUTRAL;
+
+  ADC_Calibrator(&cal);
+
+  while (1)
+  {
+    ADC_Read(&adc_values, &cal);       
+    direction = ADC_GetJoystickDirection(adc_values.xRaw, adc_values.yRaw);
+    switch(direction)
+    {
+      case UP:
+        if (position->page > 1)
+        {
+          position->page -= 2; 
+        }
+        printf("UP\n");
+        OLED_HighlightPage(position, position->page);
+        break;
+      case DOWN:
+        if (position->page < 4)
+        {
+          position->page += 2;
+        }
+        printf("DOWN\n");
+        OLED_HighlightPage(position, position->page);
+        break;
+      default:
+        break;
+    }
+    _delay_ms(500);
+  }
   return;
 }

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "drivers/oled.h"
 #include "drivers/usart.h"
+#include "drivers/adc.h"
 #include "drivers/xmem.h"
 
 int main(void) {
@@ -10,15 +11,13 @@ int main(void) {
   // Initialize external memory
   XMEM_Init();
 
+  // Initialize ADC
+  ADC_Init();
+
   // Initialize OLED 
-  OLED_Init();
+  struct OLEDPosition oled_position = {.page = 0, .segment = 0};
+  OLED_Init(&oled_position);
 
-  uint8_t alpha[8] = {0b00111110,0b01111111,0b01000001,0b01011101,0b01011101,0b00011111,0b00011110,0b00000000};
-
-  for (int i = 0; i < 8; i++)
-  {
-    OLED_WriteData(alpha[i]);
-  }
-
+  OLED_Home(&oled_position);
   return 0;
 }

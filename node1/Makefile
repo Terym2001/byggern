@@ -1,12 +1,14 @@
 DRIVER_DIR := drivers
 TEST_DIR := test
+RESOURCES_DIR := resources
 
 SOURCE_FILES := main.c \
 							  $(DRIVER_DIR)/usart.c \
 								$(DRIVER_DIR)/oled.c \
 								$(DRIVER_DIR)/xmem.c  \
-								#$(DRIVER_DIR)/sram.c  \
-								#$(DRIVER_DIR)/adc.c  \
+								$(RESOURCES_DIR)/fonts.c \
+								$(DRIVER_DIR)/sram.c  \
+								$(DRIVER_DIR)/adc.c  \
 								#$(TEST_DIR)/sram_test.c
 
 PROGRAM_WITH_JTAG := yes
@@ -32,6 +34,7 @@ OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 $(BUILD_DIR)/$(DRIVER_DIR): 
 	mkdir -p $(BUILD_DIR)/$(DRIVER_DIR)
 	mkdir $(BUILD_DIR)/$(TEST_DIR)
+	mkdir	$(BUILD_DIR)/$(RESOURCES_DIR)
 
 # Build all object files
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)/$(DRIVER_DIR)
