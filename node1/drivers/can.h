@@ -18,6 +18,8 @@
 
 void CAN_Init(void);
 
-void CAN_Read(uint8_t address, uint8_t* data, uint8_t size);
+void CAN_Read(uint8_t address, uint8_t* data, uint8_t size);//TODO: IMPLMENT THIS WITH IDS and stuff
+
+void CAN_Write(uint8_t address, uint8_t* data, uint8_t size);//TODO: IMPLMENT THIS WITH IDS and stuff
 
 #endif

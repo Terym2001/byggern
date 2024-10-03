@@ -1,5 +1,6 @@
 #include "mcp2515.h"
 
+
 void MCP2515_Read(uint8_t address, uint8_t *buffer, uint8_t size) {
   // Select the MCP2515
   PORTB &= ~(1 << SS); 
@@ -113,4 +114,23 @@ void MCP2515_Reset(void)
   PORTB |= (1 << SS);
 
   return;
+}
+
+void MCP2515_Init(void)
+{
+  //Setup SPI
+  SPI_MasterInit();
+  //Reset MCP2515
+  MCP2515_Reset();
+  // Set the baud rate
+  // Setup CNF1  
+  MCP2515_BitModify(CNF1, 0b00111111, BRP);
+  MCP2515_BitModify(CNF1, 0b11000000,SJW_VAL << SJW);
+  //Setup CNF2
+  MCP2515_BitModify(CNF2, 0b00111000,PS1 << PHSEG12);
+  MCP2515_BitModify(CNF2, 0b00000111,PROPSEG);
+  MCP2515_BitModify(CNF2, 0b10000000,SAM_VAL << SAM);
+  MCP2515_BitModify(CNF2, 0b01000000,BTLMODE_VAL << BTLMODE);
+  //Setup CNF3
+  MCP2515_BitModify(CNF3, 0b00000111,PS2);
 }
