@@ -159,7 +159,7 @@ void OLED_SubScreen(struct OLEDPosition *position)
         {
           position->page -= 2; 
         }
-        printf("UP\n");
+        printf("UP\n\r");
         OLED_HighlightPage(position, position->page);
         break;
       case DOWN:
@@ -167,12 +167,12 @@ void OLED_SubScreen(struct OLEDPosition *position)
         {
           position->page += 2;
         }
-        printf("DOWN\n");
+        printf("DOWN\n\r");
         OLED_HighlightPage(position, position->page);
         break;
       case PRESSED:
-        ChangeScreen = &OLED_Home;
-        printf("Changing back to Home \n");
+        ChangeScreen = OLED_Home;
+        printf("Changing back to Home \n\r");
         _delay_ms(5000); //TODO: This can be removed when it checks btn
       default:
         break;
@@ -216,7 +216,7 @@ void OLED_Home(struct OLEDPosition *position)
         {
           position->page -= 2; 
         }
-        printf("UP\n");
+        printf("UP\n\r");
         OLED_HighlightPage(position, position->page);
         break;
       case DOWN:
@@ -224,13 +224,13 @@ void OLED_Home(struct OLEDPosition *position)
         {
           position->page += 2;
         }
-        printf("DOWN\n");
+        printf("DOWN\n\r");
         OLED_HighlightPage(position, position->page);
         break;
       //TODO:Implement so that this only happens when we are at correct page
       case PRESSED:
         ChangeScreen = &OLED_SubScreen;
-        printf("Changing to subscreen \n");//TODO: This can be removed when it checks btn
+        printf("Changing to subscreen \n\r");//TODO: This can be removed when it checks btn
          _delay_ms(5000);
       default:
         break;
