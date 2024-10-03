@@ -26,6 +26,7 @@ void ADC_InitializeExternalClock(void) {
 
 void ADC_Init(void) {
   DDRD &= ~(1 << PD5);
+  DDRB &= ~(1 << PB2);
   ADC_InitializeExternalClock();
   return;
 }
@@ -77,7 +78,7 @@ void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPosition
   return;
 }
 
-enum JoystickDirection ADC_GetJoystickDirection(uint8_t xRaw, uint8_t yRaw) {
+enum JoystickDirection ADC_GetJoystickDirection(uint8_t xRaw, uint8_t yRaw, uint8_t zPressed) {
   struct JoystickPositionPercent pos;
 
   // Get the X and Y percentage positions
@@ -95,7 +96,11 @@ enum JoystickDirection ADC_GetJoystickDirection(uint8_t xRaw, uint8_t yRaw) {
     return DOWN;
   } else if (pos.yPercent > threshold) {
     return UP;
-  } else {
+  } else if(!(PINB & (1 << PINB2))) //TODO:FIX THIS SO IT DONT TAKE IN SLIDER VALUE BUT PRESSED BTN 
+  {
+    return PRESSED;
+  }
+  else {
     return NEUTRAL;
   }
 }

@@ -1,7 +1,7 @@
 #ifndef _SRAM_H_
 #define _SRAM_H_
 
-#include <stdio.h>
+#include "../main.h"
 #include "xmem.h"
 
 #define SRAM_BASE_ADDRESS 0x1800

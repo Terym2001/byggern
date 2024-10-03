@@ -1,7 +1,7 @@
 #ifndef _XMEM_H
 #define _XMEM_H
 
-#include <avr/io.h>
+#include "../main.h" 
 
 void XMEM_Init(void);
 
