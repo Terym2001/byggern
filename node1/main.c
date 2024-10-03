@@ -1,8 +1,5 @@
 #include "main.h"
-#include "drivers/oled.h"
-#include "drivers/usart.h"
-#include "drivers/adc.h"
-#include "drivers/xmem.h"
+#include "drivers/spi.h"
 
 int main(void) {
   // Initialize uart with baud rate and frameformat
@@ -14,10 +11,13 @@ int main(void) {
   // Initialize ADC
   ADC_Init();
 
-  // Initialize OLED 
-  struct OLEDPosition oled_position = {.page = 0, .segment = 0};
-  OLED_Init(&oled_position);
+  SPI_MasterInit();
 
-  OLED_Home(&oled_position);
+  while (1)
+  {
+    unsigned char read = SPI_MasterTransmit(0b10101010);
+    _delay_ms(2);
+  }
+
   return 0;
 }
