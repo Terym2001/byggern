@@ -171,7 +171,7 @@ void OLED_SubScreen(struct OLEDPosition *position)
         OLED_HighlightPage(position, position->page);
         break;
       case PRESSED:
-        ChangeScreen = OLED_Home;
+        ChangeScreen = &OLED_Home;
         printf("Changing back to Home \n");
         _delay_ms(5000); //TODO: This can be removed when it checks btn
       default:
@@ -229,7 +229,7 @@ void OLED_Home(struct OLEDPosition *position)
         break;
       //TODO:Implement so that this only happens when we are at correct page
       case PRESSED:
-        ChangeScreen = OLED_SubScreen;
+        ChangeScreen = &OLED_SubScreen;
         printf("Changing to subscreen \n");//TODO: This can be removed when it checks btn
          _delay_ms(5000);
       default:
