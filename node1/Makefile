@@ -6,9 +6,10 @@ SOURCE_FILES := main.c \
 							  $(DRIVER_DIR)/usart.c \
 								$(DRIVER_DIR)/oled.c \
 								$(DRIVER_DIR)/xmem.c  \
-								$(RESOURCES_DIR)/fonts.c \
 								$(DRIVER_DIR)/sram.c  \
 								$(DRIVER_DIR)/adc.c  \
+								$(DRIVER_DIR)/spi.c  \
+								$(RESOURCES_DIR)/fonts.c \
 								#$(TEST_DIR)/sram_test.c
 
 PROGRAM_WITH_JTAG := yes
