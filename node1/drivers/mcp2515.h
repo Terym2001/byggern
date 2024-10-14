@@ -3,52 +3,259 @@
 
 #include <avr/io.h>
 #include <stdint.h>
+#include <util/delay.h>
 #include "spi.h"
 
-#define MCP2515_RESET 0xC0
-#define MCP2515_READ 0x03
-#define MCP2515_WRITE 0x02
-#define MCP2515_READ_STATUS 0xA0
-#define MCP2515_BIT_MODIFY 0x05
+/*
+mcp2515.h
 
-#define MCP2515_RTS 0x80
+This file contains constants that are specific to the MCP2515.
+
+Version     Date        Description
+----------------------------------------------------------------------
+v1.00       2003/12/11  Initial release
+
+Copyright 2003 Kimberly Otten Software Consulting
+*/
+
+// Define MCP2515 register addresses
+
+#define MCP_RXF0SIDH	0x00
+#define MCP_RXF0SIDL	0x01
+#define MCP_RXF0EID8	0x02
+#define MCP_RXF0EID0	0x03
+#define MCP_RXF1SIDH	0x04
+#define MCP_RXF1SIDL	0x05
+#define MCP_RXF1EID8	0x06
+#define MCP_RXF1EID0	0x07
+#define MCP_RXF2SIDH	0x08
+#define MCP_RXF2SIDL	0x09
+#define MCP_RXF2EID8	0x0A
+#define MCP_RXF2EID0	0x0B
+#define MCP_CANSTAT		0x0E
+#define MCP_CANCTRL		0x0F
+#define MCP_RXF3SIDH	0x10
+#define MCP_RXF3SIDL	0x11
+#define MCP_RXF3EID8	0x12
+#define MCP_RXF3EID0	0x13
+#define MCP_RXF4SIDH	0x14
+#define MCP_RXF4SIDL	0x15
+#define MCP_RXF4EID8	0x16
+#define MCP_RXF4EID0	0x17
+#define MCP_RXF5SIDH	0x18
+#define MCP_RXF5SIDL	0x19
+#define MCP_RXF5EID8	0x1A
+#define MCP_RXF5EID0	0x1B
+#define MCP_TEC			0x1C
+#define MCP_REC			0x1D
+#define MCP_RXM0SIDH	0x20
+#define MCP_RXM0SIDL	0x21
+#define MCP_RXM0EID8	0x22
+#define MCP_RXM0EID0	0x23
+#define MCP_RXM1SIDH	0x24
+#define MCP_RXM1SIDL	0x25
+#define MCP_RXM1EID8	0x26
+#define MCP_RXM1EID0	0x27
+#define MCP_CNF3		0x28
+#define MCP_CNF2		0x29
+#define MCP_CNF1		0x2A
+#define MCP_CANINTE		0x2B
+#define MCP_CANINTF		0x2C
+#define MCP_EFLG		0x2D
+#define MCP_TXB0CTRL	0x30
+#define MCP_TXB1CTRL	0x40
+#define MCP_TXB2CTRL	0x50
+#define MCP_RXB0CTRL	0x60
+#define MCP_RXB0SIDH	0x61
+#define MCP_RXB1CTRL	0x70
+#define MCP_RXB1SIDH	0x71
+
+#define MCP_TX_INT		0x1C		// Enable all transmit interrupts
+#define MCP_TX01_INT	0x0C		// Enable TXB0 and TXB1 interrupts
+#define MCP_RX_INT		0x03		// Enable receive interrupts
+#define MCP_NO_INT		0x00		// Disable all interrupts
+
+#define MCP_TX01_MASK	0x14
+#define MCP_TX_MASK		0x54
+
+// Define SPI Instruction Set
+
+#define MCP_WRITE		0x02
+
+#define MCP_READ		0x03
+
+#define MCP_BITMOD		0x05
+
+#define MCP_LOAD_TX0	0x40
+#define MCP_LOAD_TX1	0x42
+#define MCP_LOAD_TX2	0x44
+
+#define MCP_RTS_TX0		0x81
+#define MCP_RTS_TX1		0x82
+#define MCP_RTS_TX2		0x84
+#define MCP_RTS_ALL		0x87
+
+#define MCP_READ_RX0	0x90
+#define MCP_READ_RX1	0x94
+
+#define MCP_READ_STATUS	0xA0
+
+#define MCP_RX_STATUS	0xB0
+
+#define MCP_RESET		0xC0
+
+
+// CANCTRL Register Values
+
+#define MODE_NORMAL     0x00
+#define MODE_SLEEP      0x20
+#define MODE_LOOPBACK   0x40
+#define MODE_LISTENONLY 0x60
+#define MODE_CONFIG     0x80
+#define MODE_POWERUP	0xE0
+#define MODE_MASK		0xE0
+#define ABORT_TX        0x10
+#define MODE_ONESHOT	0x08
+#define CLKOUT_ENABLE	0x04
+#define CLKOUT_DISABLE	0x00
+#define CLKOUT_PS1		0x00
+#define CLKOUT_PS2		0x01
+#define CLKOUT_PS4		0x02
+#define CLKOUT_PS8		0x03
+
+
+// CNF1 Register Values
+
+#define SJW1            7 
+#define SJW0            6 
+
+#define BRP 0x04 - 1//Actually 4 but some data sheet black macic
+
+// CNF2 Register Values
+
+#define BTLMODE		      7	
+#define SAMPLE_1X       0x00
+#define SAMPLE_3X       0x40
+
+#define PHSEG10         3
+#define PRSEG2          2
+#define PRSEG1          1
+#define PRSEG0          0
+#define SAM             6
+// #define PROPSEG         0x02 - 1
+#define PS1             7 - 1
+
+
+// CNF3 Register Values
+
+#define SOF_ENABLE		0x80
+#define SOF_DISABLE		0x00
+#define WAKFIL_ENABLE	0x40
+#define WAKFIL_DISABLE	0x00
+
+#define PS2 0x06 - 1
+
+// CANINTF Register Bits
+
+#define MCP_RX0IF		0x01
+#define MCP_RX1IF		0x02
+#define MCP_TX0IF		0x04
+#define MCP_TX1IF		0x08
+#define MCP_TX2IF		0x10
+#define MCP_ERRIF		0x20
+#define MCP_WAKIF		0x40
+#define MCP_MERRF		0x80
+
 #define TXB0 0x01
 #define TXB1 0x02
 #define TXB2 0x04
-//Macros for setting baud rate
-#define CNF1 0x2A //Adress of regsiter
-#define CNF2 0x29
-#define CNF3 0x28
-#define BRP 0x04 - 1//Actually 4 but some data sheet black macic
 
-#define F_osc 16000000UL
-#define T_osc 1/F_osc
-#define T_q 2*(BRP+1)/F_osc
-//Values for registers
-#define PS1 0x07 - 1
-#define SYNCSEG 0x01
-#define PROPSEG 0x02 - 1
-#define PS2 0x06 - 1
-#define SJW_VAL 0x01
-#define SAM_VAL 0x00 //TODO: Maybe 1 idk
-#define BTLMODE_VAL 0x01 //TODO: 1 if PS2 < PS1 ?
-//CNF1 register
-#define SJW 7
-//CNF2 register
-#define PRSEG2 2
-#define PHSEG12 5
-#define SAM 6
-#define BTLMODE 7
-//CNF3 register
-#define PHSEG22 2
+//TXBnCTRL registers
+#define TXB0CTRL 0x30
+#define TXB1CTRL 0x40
+#define TXB2CTRL 0x50
 
-void MCP2515_Read(uint8_t address, uint8_t *buffer, uint8_t size);
+// TXBnSIDH registers
+#define TXB0SIDH 0x31
+#define TXB1SIDH 0x41
+#define TXB2SIDH 0x51
 
-void MCP2515_Write(uint8_t address, uint8_t *data, uint8_t size);
+// TXBnSIDL registers
+#define TXB0SIDL 0x32
+#define TXB1SIDL 0x42
+#define TXB2SIDL 0x52
+
+// TXBnDLC registers
+#define TXB0DLC 0x35
+#define TXB1DLC 0x45
+#define TXB2DLC 0x55
+
+
+// TXBnDm registers
+#define TXB0D0 0x36
+
+// TXBnCTRL register
+#define ABTF 6
+#define MLOA 5
+#define TXERR 4
+#define TXREQ 3
+#define TXP1 1
+#define TXP0 0
+
+// RXBnCTRL registers
+#define RXB0CTRL 0x60
+#define RXB1CTRL 0x70
+
+// RXBnSIDH registers
+#define RXB0SIDH 0x61
+#define RXB1SIDH 0x71
+
+// PXBnSIDL registers
+#define RXB0SIDL 0x62
+#define RXB1SIDL 0x72
+
+// RXBnDLC registers
+#define RXB0DLC 0x65
+#define RXB1DLC 0x75
+
+// RXBnDm registers
+#define RXB0D0 0x66
+#define RXB1D0 0x76
+
+// RXBnCTRL bits
+#define RXM1    6
+#define RXM0    5
+#define RXRTR   3
+#define BUKT    2
+#define BUKT1   1
+#define FILHIT0 0
+
+// CANCTRL register
+#define REQOP2 7
+#define REQOP1 6
+#define REQOP0 5
+#define ABAT 4
+#define OSM 3
+#define CLKEN 2
+#define CLKPRE1 1
+#define CLKPRE0 0
+
+// CANINTF register
+#define RX1IF   1 
+#define RX0IF   0
+
+
+// MCP_EFLG register
+#define RX1OVR  7
+#define RX0OVR  6
+
+uint8_t MCP2515_Read(uint8_t address);
+
+void MCP2515_Write(uint8_t address, uint8_t data);
 
 void MCP2515_RequestToSend(uint8_t txBuffer);
 
-void MCP2515_ReadStatus(uint8_t *status, uint8_t size);
+uint8_t MCP2515_ReadStatus(void);
 
 void MCP2515_BitModify(uint8_t address, uint8_t mask, uint8_t data);
 
