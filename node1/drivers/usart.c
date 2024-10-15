@@ -1,16 +1,19 @@
 #include "usart.h"
 
-void USART_Init(unsigned int ubrr)
+void USART_Init(unsigned long ubrr)
 {
   // Set baud rate
   UBRR0H = (unsigned char) (ubrr>>8);
-  UBRR0L = (unsigned char) ubrr;
+  UBRR0L = (unsigned char) (ubrr);
 
   // Enable transmitter and receiver
-  UCSR0B = (1 << RXEN0) | (1 << TXEN0);
+  set_bit(UCSR0B, RXEN0); 
+  set_bit(UCSR0B, TXEN0); 
 
   /* Set frame format: 8data, 2stop bit */
-  UCSR0C = (1 << URSEL0) | (1 << USBS0) | (3 << UCSZ00);
+  set_bit(UCSR0C, URSEL0);
+  set_bit(UCSR0C, USBS0);
+  set_bit(UCSR0C, UCSZ00);
 
   // Link USART to printf
   fdevopen(&USART_Transmit, &USART_Receive);
@@ -19,20 +22,20 @@ void USART_Init(unsigned int ubrr)
 }
 
 // Might need to change to char instead of unsigned char
-int USART_Transmit(char data)
+void USART_Transmit(char data)
 {
   //Wait for empty transmit buffer( UDRE0 flag is set when ready )
-  while( !( UCSR0A & (1<<UDRE0)) );
+  while( bit_is_clear(UCSR0A, UDRE0) );
 
   //Put the data in the buffer, sends data
   UDR0 = data;
-  return 0;
+  return;
 }
 
-int USART_Receive()
+uint8_t USART_Receive()
 {
   //Wait for data to be received 
-  while( !(UCSR0A & (1 << RXC0)) );
+  while( bit_is_clear(UCSR0A, RXC0) );
 
   return UDR0;
 }

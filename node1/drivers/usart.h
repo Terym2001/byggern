@@ -7,12 +7,13 @@
 
 #include <avr/io.h>
 #include <stdio.h>
+#include <stdint.h>
 
-void USART_Init(unsigned int ubrr);
+void USART_Init(unsigned long ubrr);
 
 // Might need to change to char instead of unsigned char
-int USART_Transmit(char data);
+void USART_Transmit(uint8_t data);
 
-int USART_Receive();
+uint8_t USART_Receive();
 
 #endif

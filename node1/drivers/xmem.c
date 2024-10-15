@@ -3,11 +3,11 @@
 void XMEM_Init(void)
 {
   // Enable external SRAM/XMEM
-  MCUCR |= (1 << SRE);
+  set_bit(MCUCR, SRE);
 
   // PC7-PC4 Released as normal pins when external memory is enabled
-  SFIOR &= ~(0b111 << XMM0);
-  SFIOR |= (1 << XMM2);
+  clear_bit_value(SFIOR, XMM0, 0b111);
+  set_bit(SFIOR, XMM2);
   return;
 }
 
