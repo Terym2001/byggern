@@ -27,7 +27,7 @@ void MCP2515_Init(void)
     printf("MCP2515 is NOT in configuration mode after reset!, CANSTAT: %x\n\t", status);
   }
 
-  MCP2515_BitModify(MCP_CANINTE, 0b00011111, 0);
+  MCP2515_BitModify(TXB0CTRL, 0b00000100, 0);
 
   // // Set the baud rate
   // // Setup CNF1  
