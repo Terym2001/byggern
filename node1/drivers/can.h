@@ -8,7 +8,7 @@
 
 struct can_message {
   uint16_t id;
-  //uint8_t length;
+  uint8_t length;
   uint8_t data[8];
 };
 

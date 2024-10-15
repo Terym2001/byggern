@@ -23,14 +23,20 @@ void CAN_Init(void)
 struct can_message CAN_Recieve() 
 {
   struct can_message msg;
-  // TODO: Implement this function
+  // TODO: Implement this function with switch case as in CAN_Send
    
-  //while (!(MCP2515_Read(MCP_CANINTF) & (1 << RX0IF))) {}
+  while (!(MCP2515_Read(MCP_CANINTF) & (1 << RX0IF))) {}
 
-  uint8_t data = MCP2515_Read(RXB0D0); 
-  uint8_t data2 = MCP2515_Read(RXB1D0);
-  msg.data[0] = data;
-  msg.data[1] = data2;
+  uint8_t id_low = mcp_read(MCP_RXB0SIDL) >> 5;
+  uint8_t id_high = mcp_read(MCP_RXB0SIDH);
+  msg.id = (id_high << 3) | id_low; //THINK THIS IS RIGHT 
+  msg.length = MCP2515_Read(RXB0DLC);
+  for(int i = 0; i < msg.length; i++)
+  {
+    msg.data[i] = MCP2515_Read(RXB0D0 + i);
+  }
+  //Reset the interrupt flag
+  MCP2515_BitModify(MCP_CANINTF,0x03,0x00); 
 
   return msg;
 }

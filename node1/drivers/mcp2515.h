@@ -67,6 +67,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TXB2CTRL	0x50
 #define MCP_RXB0CTRL	0x60
 #define MCP_RXB0SIDH	0x61
+#define MCP_RXB0SIDL    0x62
 #define MCP_RXB1CTRL	0x70
 #define MCP_RXB1SIDH	0x71
 
