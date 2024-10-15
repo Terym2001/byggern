@@ -15,7 +15,7 @@
 #include "drivers/mcp2515.h"
 #include "drivers/can.h"
 
-#include "resources/bit_macros.h"
+//#include "resources/bit_macros.h"
 
 #include "test/sram_test.h"
 

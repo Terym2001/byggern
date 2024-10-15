@@ -1,19 +1,28 @@
 #include "main.h"
+#include "drivers/mcp2515.h"
 
 int main(void) {
   // Initialize uart with baud rate and frameformat
   USART_Init(MYUBRR);
 
-  CAN_Init();
-  uint16_t cnt = 0;
-  struct can_message msg = {.id = 0b10011111, .data = {0x0F, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}};
-  while (1)
-  {
-    CAN_Send(&msg, 0b11, TXB0);
-    struct can_message msgr = CAN_Recieve();
-    printf("Message: %u, %u, %u\n\r", msgr.data[0], msgr.data[1], cnt++);
-    _delay_ms(100);
-  }
+  MCP2515_Init(); 
+
+  uint8_t mask = (1 << REQOP2) | (1 << REQOP1) | (1 << REQOP0);
+  uint8_t data = (1 << REQOP1);
+
+  // set can controller to loopback mode
+  MCP2515_BitModify(0b00111111, mask, data);
+
+  printf("mode: %x\n\r", MCP2515_Read(0b00111110));
+
+  MCP2515_Write(TXB0SIDH, 0xAF);
+  MCP2515_Write(TXB0SIDL, (0x03 << 5));
+  MCP2515_Write(TXB0DLC, 0x0F);
+  MCP2515_Write(TXB0D0, 0xAF);
+  MCP2515_RequestToSend(MCP_RTS_TX0);
+
+  uint8_t byte = MCP2515_Read(MCP_RXB0SIDH);
+  printf("byte: %x\n\r", byte);
   
   return 0;
 }

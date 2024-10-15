@@ -19,19 +19,25 @@ void SPI_MasterInit(void)
   return;
 }
 
-unsigned char SPI_MasterTransmit(char data)
+void SPI_MasterTransmit(uint8_t data)
 {
-  PORTB &= ~(1 << SS);
-
   // Load data into the buffer
   SPDR = data;
   
   // Wait for transmission complete
   while(!(SPSR & (1 << SPIF)));
 
-  unsigned char data_read = SPDR;
-
-  PORTB |= (1 << SS);
-
-  return data_read;
+  return;
 }
+
+uint8_t SPI_MasterReceive(void)
+{
+  SPDR = 0xFF;
+
+  // Wait for reception complete
+  while(!(SPSR & (1 << SPIF)));
+
+  // Return Data Register
+  return SPDR;
+}
+

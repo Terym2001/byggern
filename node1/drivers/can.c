@@ -83,7 +83,10 @@ void CAN_Send(struct can_message* msg, uint8_t msg_priority, uint8_t txBuffer)
   MCP2515_Write(txbndlc, MSG_MAX_LENGTH);
 
   // load data
-  MCP2515_Write(TXB0D0, msg->data[0]);
+  for (uint8_t i = 0; i < 8; i++)
+  {
+    MCP2515_Write(TXB0D0, msg->data[i]);
+  }
 
   // Set TXBnCTRL.TXREQ by sending RTS command
   MCP2515_RequestToSend(txBuffer);
