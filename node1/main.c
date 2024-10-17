@@ -1,22 +1,32 @@
 #include "main.h"
-#include "drivers/spi.h"
+#include "drivers/can.h"
+#include "drivers/mcp2515.h"
 
 int main(void) {
   // Initialize uart with baud rate and frameformat
   USART_Init(MYUBRR);
 
-  // Initialize external memory
-  XMEM_Init();
+  CAN_Init();
 
-  // Initialize ADC
-  ADC_Init();
-
-  SPI_MasterInit();
-
-  while (1)
+  struct can_message msg;
+  msg.id = 0xFF;
+  msg.length = 0x08;
+  for (int i = 0; i < msg.length; i++)
   {
-    unsigned char read = SPI_MasterTransmit(0b10101010);
-    _delay_ms(2);
+    msg.data[i] = i;
+  }
+
+  CAN_Send(&msg, 0, TXB0);
+
+  struct can_message msg2 = CAN_Recieve();
+  printf("------------------\n\r");
+  printf("Received message\n\r");
+  printf("ID: %x\n\r", msg2.id);
+  printf("Length: %x\n\r", msg2.length);
+
+  for (uint8_t i = 0; i < msg2.length; i++)
+  {
+    printf("Data[%d]: %x\n\r", i, msg2.data[i]);
   }
 
   return 0;
