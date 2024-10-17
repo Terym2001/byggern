@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "sam.h"
+#include "drivers/uart.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -19,9 +20,15 @@ int main()
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
+    PMC->PMC_PCER0 |= PMC_PIOB; 
     //Uncomment after including uart above
-    //uart_init(/*cpufreq*/, /*baud*/);
-    //printf("Hello World\n\r");
+    PIOB->PIO_ABSR |= (1 << 27);
+    PIOB->PIO_OER |= (1 << 27);
+    PIOB->PIO_CODR |= (1 << 27);
+    PIOB->PIO_PER |= (1 << 27);
+    PIOB->PIO_MDDR |= (1 << 27);
+    PIOB->PIO_PUDR |= (1 << 27);
+    
 
     while (1)
     {
