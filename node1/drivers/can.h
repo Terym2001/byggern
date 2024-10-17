@@ -4,8 +4,6 @@
 #include <avr/io.h>
 #include "mcp2515.h"
 
-#define MSG_MAX_LENGTH 0xFF
-
 struct can_message {
   uint16_t id;
   uint8_t length;

@@ -1,6 +1,4 @@
 #include "main.h"
-#include "drivers/can.h"
-#include "drivers/mcp2515.h"
 
 int main(void) {
   // Initialize uart with baud rate and frameformat
