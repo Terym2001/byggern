@@ -5,6 +5,7 @@ MCUTYPE = __SAM3X8E__
 # In particular, remember to add the UART and CAN starter files.
 # Use relative file paths and a backslash before newline.
 # Do NOT use a backslash after the last file.
+DRIVER_DIR = drivers
 SOURCE_FILES = \
 	$(BOOTUP) \
 	main.c \
