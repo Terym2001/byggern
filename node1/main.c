@@ -1,34 +1,33 @@
 #include "main.h"
+#include "drivers/can.h"
 #include "drivers/mcp2515.h"
 
 int main(void) {
   // Initialize uart with baud rate and frameformat
   USART_Init(MYUBRR);
 
-  MCP2515_Init(); 
+  CAN_Init();
 
-  uint8_t mask = (1 << REQOP2) | (1 << REQOP1) | (1 << REQOP0);
-  uint8_t data = (1 << REQOP1);
-
-  // set can controller to loopback mode
-  MCP2515_BitModify(0b00111111, mask, data);
-  //Set to one shot mode
-  MCP2515_BitModify(MCP_CANCTRL,1 << 3, 1 << 3);
-  printf("First iteration\n\r");
-  while (1)
+  struct can_message msg;
+  msg.id = 0xFF;
+  msg.length = 0x08;
+  for (int i = 0; i < msg.length; i++)
   {
-    printf("mode: %x\n\r", MCP2515_Read(0b00111110));
-
-    MCP2515_Write(TXB0SIDH, 0xAF);
-    MCP2515_Write(TXB0SIDL, (0x03 << 5));
-    MCP2515_Write(TXB0DLC, 0x0F);
-    MCP2515_Write(TXB0D0, 0xAF);
-    MCP2515_RequestToSend(MCP_RTS_TX0);
-
-    uint8_t byte = MCP2515_Read(MCP_RXB0SIDH);
-    printf("byte: %x\n\r", byte);
-    _delay_ms(5000);
+    msg.data[i] = i;
   }
-  
+
+  CAN_Send(&msg, 0, TXB0);
+
+  struct can_message msg2 = CAN_Recieve();
+  printf("------------------\n\r");
+  printf("Received message\n\r");
+  printf("ID: %x\n\r", msg2.id);
+  printf("Length: %x\n\r", msg2.length);
+
+  for (uint8_t i = 0; i < msg2.length; i++)
+  {
+    printf("Data[%d]: %x\n\r", i, msg2.data[i]);
+  }
+
   return 0;
 }
