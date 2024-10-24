@@ -9,6 +9,10 @@ SOURCE_FILES = \
 	$(BOOTUP) \
 	main.c \
 	drivers/uart.c \
+	drivers/time.c \
+	drivers/pio.c \
+	drivers/can.c \
+	#test/can_test.c \
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \

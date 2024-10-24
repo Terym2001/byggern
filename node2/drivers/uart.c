@@ -173,6 +173,3 @@ int _read(int file, char* ptr, int len){
     }
     return nread;
 }
-
-
-   

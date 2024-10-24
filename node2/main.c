@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "sam.h"
+#include "drivers/can.h"
 #include "drivers/uart.h"
+#include "drivers/time.h"
+#include "drivers/pio.h"
+
+#define F_CPU 84000000
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -16,23 +21,47 @@
 
 int main()
 {
-    SystemInit();
+  SystemInit();
 
-    WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
+  WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
-    PMC->PMC_PCER0 |= PMC_PIOB; 
-    //Uncomment after including uart above
-    PIOB->PIO_ABSR |= (1 << 27);
-    PIOB->PIO_OER |= (1 << 27);
-    PIOB->PIO_CODR |= (1 << 27);
-    PIOB->PIO_PER |= (1 << 27);
-    PIOB->PIO_MDDR |= (1 << 27);
-    PIOB->PIO_PUDR |= (1 << 27);
-    
+  uart_init(F_CPU, 9600);
 
-    while (1)
+  can_init((CanInit){.brp = 41, .smp = 0, .phase1 = 6, .phase2 = 5, .sjw = 0, .propag = 1}, 0);
+  CanMsg msg;
+  uint8_t status = 0;
+  printf("Initialize testing --><--\r\n");
+
+  enum JoystickDirection direction = NEUTRAL;
+  while (1)
+  {
+    status = can_rx(&msg);
+    if (status != 0)
     {
-        /* code */
+      direction = (enum JoystickDirection) msg.byte[0];
+      char* direction_str = "HMM";
+      switch (direction)
+      {
+        case LEFT:
+          direction_str = "LEFT";
+          break;
+        case RIGHT:
+          direction_str = "RIGHT";
+          break;
+        case UP:
+          direction_str = "UP";
+          break;
+        case DOWN:
+          direction_str = "DOWN";
+          break;
+        case PRESSED:
+          direction_str = "PRESSED";
+          break;
+        case NEUTRAL:
+          direction_str = "NEUTRAL";
+          break;
+      }
+      printf("State: %s\n\r", direction_str);
     }
-    
+  }
 }

@@ -151,7 +151,7 @@ void OLED_SubScreen(struct OLEDPosition *position)
   while (1)
   {
     ADC_Read(&adc_values, &cal);       
-    direction = ADC_GetJoystickDirection(adc_values.xRaw, adc_values.yRaw,adc_values.leftSlider); //TODO: Change name of adc_values 
+    direction = ADC_GetJoystickDirection(&adc_values); //TODO: Change name of adc_values 
     switch(direction)
     {
       case UP:
@@ -208,7 +208,7 @@ void OLED_Home(struct OLEDPosition *position)
   while (1)
   {
     ADC_Read(&adc_values, &cal);       
-    direction = ADC_GetJoystickDirection(adc_values.xRaw, adc_values.yRaw,adc_values.leftSlider); //TODO: Change name of adc_values 
+    direction = ADC_GetJoystickDirection(&adc_values); //TODO: Change name of adc_values 
     switch(direction)
     {
       case UP:

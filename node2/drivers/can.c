@@ -1,7 +1,6 @@
-
-#include "sam.h"
-#include "../../../lib/can/can.h"
 #include <stdio.h>
+#include "sam.h"
+#include "can.h"
 
 void can_printmsg(CanMsg m){
     printf("CanMsg(id:%d, length:%d, data:{", m.id, m.length);
@@ -11,7 +10,7 @@ void can_printmsg(CanMsg m){
     for(uint8_t i = 1; i < m.length; i++){
         printf(", %d", m.byte[i]);
     }
-    printf("})\n");
+    printf("})\n\r");
 }
 
 

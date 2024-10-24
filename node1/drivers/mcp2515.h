@@ -130,7 +130,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define SJW1            7 
 #define SJW0            6 
 
-#define BRP 0x04 - 1//Actually 4 but some data sheet black macic
+#define BRP 0x04 - 1 //Actually 4 but some data sheet black macic
 
 // CNF2 Register Values
 

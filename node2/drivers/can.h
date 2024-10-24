@@ -3,6 +3,15 @@
 
 #include <stdint.h>
 
+#define F_CPU 84000000
+#define BAUDRATE 125000UL
+#define BITTIME (1UL/BAUDRATE)
+#define N_TQ 16UL
+#define TQ (BITTIME/N_TQ)
+#define BRP (TQ*F_CPU)
+#define PROPSEG (2L*190L*10L**(-9L))
+#define PLACE1 (BITTIME - TQ - PROPSEG)
+
 // Struct with bit timing information
 // See `can_init` for usage example
 typedef struct CanInit CanInit;
@@ -28,6 +37,7 @@ __attribute__((packed)) struct CanInit {
 //    can_init((CanInit){.brp = F_CPU/2000000-1, .phase1 = 5, .phase2 = 1, .propag = 6}, 0);
 void can_init(CanInit init, uint8_t rxInterrupt);
 
+enum JoystickDirection { LEFT, RIGHT, UP, DOWN, PRESSED, NEUTRAL };
 
 // Strict-aliasing-safe reinterpret-cast
 #define union_cast(type, x) \

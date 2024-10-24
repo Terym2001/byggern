@@ -26,24 +26,20 @@ void MCP2515_Init(void)
   {
     printf("MCP2515 is NOT in configuration mode after reset!, CANSTAT: %x\n\t", status);
   }
-  //This must be wrong 
-  MCP2515_BitModify(TXB0CTRL, 0b00000100, 0);
 
-  // // Set the baud rate
-  // // Setup CNF1  
-  // MCP2515_BitModify(MCP_CNF1, 0b00111111, BRP);
-  // MCP2515_BitModify(MCP_CNF1, 0b11000000, (1 << SJW1));
+  // Set the baud rate
+  // Setup CNF1  
+  MCP2515_BitModify(MCP_CNF1, 0b00111111, BRP);
+  MCP2515_BitModify(MCP_CNF1, 0b11000000, 0x0);
 
-  // //Setup CNF2
-  // MCP2515_BitModify(MCP_CNF2, 0b00111000, PS1 << PHSEG10);
-  // MCP2515_BitModify(MCP_CNF2, 0b00000111, (1 << PRSEG0));
+  //Setup CNF2
+  MCP2515_BitModify(MCP_CNF2, 0b00111000, PS1 << PHSEG10);
+  MCP2515_BitModify(MCP_CNF2, 0b00000111, (1 << PRSEG0));
+  MCP2515_BitModify(MCP_CNF2, 0b01000000, (0 << SAM));
+  MCP2515_BitModify(MCP_CNF2, 0b10000000, (1 << BTLMODE));
 
-  // // TODO: maybe 1 idk
-  // MCP2515_BitModify(MCP_CNF2, 0b10000000, (0 << SAM));
-  // MCP2515_BitModify(MCP_CNF2, 0b01000000, (1 << BTLMODE));
-
-  // //Setup CNF3
-  // MCP2515_BitModify(MCP_CNF3, 0b00000111, PS2);
+  //Setup CNF3
+  MCP2515_BitModify(MCP_CNF3, 0b00000111, PS2);
 
   return;
 }

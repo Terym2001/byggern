@@ -78,11 +78,11 @@ void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPosition
   return;
 }
 
-enum JoystickDirection ADC_GetJoystickDirection(uint8_t xRaw, uint8_t yRaw, uint8_t zPressed) {
+enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values) {
   struct JoystickPositionPercent pos;
 
   // Get the X and Y percentage positions
-  ADC_GetJoystickPosition(xRaw, yRaw, &pos);
+  ADC_GetJoystickPosition(adc_values->xRaw, adc_values->yRaw, &pos);
 
   // TODO: might need to test other thresholds
   // Define thresholds for detecting directions
@@ -96,7 +96,7 @@ enum JoystickDirection ADC_GetJoystickDirection(uint8_t xRaw, uint8_t yRaw, uint
     return DOWN;
   } else if (pos.yPercent > threshold) {
     return UP;
-  } else if(!(PINB & (1 << PINB2))) //TODO:FIX THIS SO IT DONT TAKE IN SLIDER VALUE BUT PRESSED BTN 
+  } else if(!(PINB & (1 << PINB2))) 
   {
     return PRESSED;
   }
