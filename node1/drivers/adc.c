@@ -78,29 +78,35 @@ void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPosition
   return;
 }
 
-enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values) {
+enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values, struct CalibrateADC *cal) {
   struct JoystickPositionPercent pos;
+
+  ADC_Read(adc_values, cal);
 
   // Get the X and Y percentage positions
   ADC_GetJoystickPosition(adc_values->xRaw, adc_values->yRaw, &pos);
 
-  // TODO: might need to test other thresholds
-  // Define thresholds for detecting directions
-  int threshold = 60; // Example threshold for determining direction
+  int threshold = 60;  
 
   if (pos.xPercent < -threshold) {
     return LEFT;
-  } else if (pos.xPercent > threshold) {
+  } 
+  else if (pos.xPercent > threshold) 
+  {
     return RIGHT;
-  } else if (pos.yPercent < -threshold) {
+  } 
+  else if (pos.yPercent < -threshold) 
+  {
     return DOWN;
-  } else if (pos.yPercent > threshold) {
+  }
+  else if (pos.yPercent > threshold) 
+  {
     return UP;
-  } else if(!(PINB & (1 << PINB2))) 
+  } 
+  else if(!(PINB & (1 << PINB2))) 
   {
     return PRESSED;
   }
-  else {
-    return NEUTRAL;
-  }
+
+  return NEUTRAL;
 }

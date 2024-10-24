@@ -22,9 +22,7 @@ int main(void) {
 
   while(1)
   {
-    ADC_Read(&adc_values, &calibrate);
-    
-    direction = ADC_GetJoystickDirection(&adc_values); 
+    direction = ADC_GetJoystickDirection(&adc_values, &calibrate); 
 
     // char* direction_str = "HMM";
     // switch (direction)

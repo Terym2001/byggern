@@ -12,11 +12,6 @@
 #define ADC_BASE_ADDRESS 0x1400
 #define ADC_MAX_ADDRESS 0x03FF
 
-// TODO
-#define JOYSTICK_X 0x1400
-#define JOYSTICK_Y 0x1401
-#define JOYSTICK_PRESS 0x1402
-
 struct CalibrateADC {
   int8_t xOffset;
   int8_t yOffset;
@@ -46,6 +41,6 @@ void ADC_Calibrator(struct CalibrateADC *cal);
 
 void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPositionPercent *Jpos);
 
-enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values);
+enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values, struct CalibrateADC *cal);
 
 #endif
