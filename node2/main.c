@@ -3,6 +3,7 @@
 #include "sam.h"
 #include "drivers/can.h"
 #include "drivers/uart.h"
+#include "drivers/pwm.h"
 #include "drivers/time.h"
 #include "drivers/pio.h"
 
@@ -26,6 +27,9 @@ int main()
   WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
   uart_init(F_CPU, 9600);
+
+  // Initialize the PWM
+  pwm_init();
 
   can_init((CanInit){.brp = 41, .smp = 0, .phase1 = 6, .phase2 = 5, .sjw = 0, .propag = 1}, 0);
   CanMsg msg;
