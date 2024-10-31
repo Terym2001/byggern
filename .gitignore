@@ -1,3 +1,4 @@
 node1/build/
 *.swp
 .vscode/
+*.DS_STORE
