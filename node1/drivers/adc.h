@@ -1,7 +1,8 @@
-#ifndef ADC_H_H
-#define ADC_H_H
+#ifndef _ADC_H
+#define _ADC_H
 
-#include "../main.h"
+#include <avr/io.h>
+#include <stdio.h>
 #include "xmem.h"
 
 #define ADC_CLOCK_F 4915200UL
@@ -45,6 +46,6 @@ void ADC_Calibrator(struct CalibrateADC *cal);
 
 void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPositionPercent *Jpos);
 
-enum JoystickDirection ADC_GetJoystickDirection(uint8_t xRaw, uint8_t yRaw, uint8_t zPressed);
+enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values);
 
 #endif

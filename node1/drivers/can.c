@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 #include "can.h"
 #include "mcp2515.h"
 
@@ -10,9 +9,9 @@ void CAN_Init(void)
   MCP2515_Init();
   
   uint8_t mask = (1 << REQOP2) | (1 << REQOP1) | (1 << REQOP0);
-  uint8_t data = (1 << REQOP1);
+  uint8_t data = 0x0;
 
-  // set can controller to loopback mode
+  // set can controller to normal mode
   MCP2515_BitModify(MCP_CANCTRL, mask, data);
 }
 
