@@ -2,7 +2,6 @@
 
 void pwm_init(void)
 {
-  // Initialize peripheral clock for PWM and PIOB
   PMC->PMC_PCER1 = (PMC_PCER1_PID36);
   PMC->PMC_PCER0 |= (1 << 12);
 
@@ -43,5 +42,20 @@ void pwm_init(void)
   PWM->PWM_ENA |= (1 << 1);
 
   PWM->PWM_WPCR |= (1 << 0) | (1 << 1);
+  return;
+}
+
+void pwm_set_duty_cycle(uint16_t duty_cycle)
+{
+  if (duty_cycle < DUTY_CYCLE_LOWER_BOUND)
+  {
+    duty_cycle = DUTY_CYCLE_LOWER_BOUND;
+  }
+  else if (duty_cycle < DUTY_CYCLE_UPPER_BOUND)
+  {
+    duty_cycle = DUTY_CYCLE_UPPER_BOUND;
+  }
+
+  PWM->PWM_CH_NUM[1].PWM_CDTY = (duty_cycle * CALCULATED_CPRD) / 1000;
   return;
 }
