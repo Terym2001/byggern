@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "sam.h"
 #include "pio.h"
+#include "can.h"
 
 #define CALCULATED_CPRD 13125
 
@@ -15,5 +16,7 @@
 void pwm_init(void);
 
 void pwm_set_duty_cycle(uint16_t cycle_percentage);
+
+void pwm_set_servo_angle(enum JoystickDirection direction);
 
 #endif

@@ -30,12 +30,12 @@ int main()
 
   // Initialize the PWM
   pwm_init();
+  pwm_set_duty_cycle(DUTY_CYCLE_LOWER_BOUND - 10);
 
   can_init((CanInit){.brp = 41, .smp = 0, .phase1 = 6, .phase2 = 5, .sjw = 0, .propag = 1}, 0);
   CanMsg msg;
   uint8_t status = 0;
-  printf("Initialize testing --><--\r\n");
-
+  printf("Initialize testing LOL --><--\r\n");
   enum JoystickDirection direction = NEUTRAL;
   while (1)
   {
@@ -48,6 +48,7 @@ int main()
       {
         case LEFT:
           direction_str = "LEFT";
+
           break;
         case RIGHT:
           direction_str = "RIGHT";
@@ -66,6 +67,7 @@ int main()
           break;
       }
       printf("State: %s\n\r", direction_str);
+      pwm_set_servo_angle(direction);
     }
   }
 }

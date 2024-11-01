@@ -45,17 +45,46 @@ void pwm_init(void)
   return;
 }
 
+//Insert dutcy_cycle as a promille value
 void pwm_set_duty_cycle(uint16_t duty_cycle)
 {
   if (duty_cycle < DUTY_CYCLE_LOWER_BOUND)
   {
     duty_cycle = DUTY_CYCLE_LOWER_BOUND;
   }
-  else if (duty_cycle < DUTY_CYCLE_UPPER_BOUND)
+  else if (duty_cycle > DUTY_CYCLE_UPPER_BOUND)
   {
     duty_cycle = DUTY_CYCLE_UPPER_BOUND;
   }
 
   PWM->PWM_CH_NUM[1].PWM_CDTY = (duty_cycle * CALCULATED_CPRD) / 1000;
+  return;
+}
+
+void pwm_set_servo_angle(enum JoystickDirection direction){
+  //TODO: Change values after testing
+  switch (direction)
+  {
+  case LEFT:
+    pwm_set_duty_cycle(DUTY_CYCLE_LOWER_BOUND);
+    break;
+  case RIGHT:
+    pwm_set_duty_cycle(DUTY_CYCLE_UPPER_BOUND);
+    break;
+  case UP:
+    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL + 10);
+    break;
+  case DOWN:
+    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL - 10);
+    break;
+  case PRESSED:
+    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL);
+    break;
+  case NEUTRAL:
+    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL);
+    break;
+  default:
+    break;
+  }
   return;
 }
