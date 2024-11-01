@@ -72,4 +72,4 @@ build/pwm.o: drivers/pwm.c drivers/pwm.h sam/sam3x/include/sam.h \
  sam/sam3x/include/instance/instance_wdt.h \
  sam/sam3x/include/instance/instance_rtc.h \
  sam/sam3x/include/instance/instance_gpbr.h \
- sam/sam3x/include/pio/pio_sam3x8e.h drivers/pio.h
+ sam/sam3x/include/pio/pio_sam3x8e.h drivers/pio.h drivers/can.h

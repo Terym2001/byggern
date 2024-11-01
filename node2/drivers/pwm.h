@@ -10,7 +10,7 @@
 
 #define DUTY_CYCLE_LOWER_BOUND  45
 #define DUTY_CYCLE_UPPER_BOUND  105 
-#define DUTY_CYCLE_MIDDEL       ((DUTY_CYCLE_UPPER_BOUND - DUTY_CYCLE_LOWER_BOUND)/2)
+#define DUTY_CYCLE_MIDDEL       75 
 
 
 void pwm_init(void);

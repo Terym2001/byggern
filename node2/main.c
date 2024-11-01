@@ -30,7 +30,7 @@ int main()
 
   // Initialize the PWM
   pwm_init();
-  pwm_set_duty_cycle(DUTY_CYCLE_LOWER_BOUND - 10);
+  //pwm_set_duty_cycle(DUTY_CYCLE_LOWER_BOUND - 10);
 
   can_init((CanInit){.brp = 41, .smp = 0, .phase1 = 6, .phase2 = 5, .sjw = 0, .propag = 1}, 0);
   CanMsg msg;
@@ -48,7 +48,6 @@ int main()
       {
         case LEFT:
           direction_str = "LEFT";
-
           break;
         case RIGHT:
           direction_str = "RIGHT";
