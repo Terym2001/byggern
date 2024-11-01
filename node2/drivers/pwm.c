@@ -2,13 +2,10 @@
 
 void pwm_init(void)
 {
-  PMC->PMC_WPMR = (0x504D43 << 8);
-  PMC->PMC_WPMR &= ~(1 << 0);
+  // Initialize peripheral clock for PWM and PIOB
   PMC->PMC_PCER1 = (PMC_PCER1_PID36);
-  // TODO: either 1 or 0
   PMC->PMC_PCER0 |= (1 << 12);
 
-  // TODO: Double check
   // Initialize peripheral clock
   PIOB->PIO_ABSR |= (1 << 13);
   PIOB->PIO_PDR |= (1 << 13);    // Enable the pin
