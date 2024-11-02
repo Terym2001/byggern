@@ -34,21 +34,21 @@ void ADC_Init(void) {
 void ADC_Read(struct Joystick *joystick) {
   XMEM_Write(0x00, 0x00, ADC_BASE_ADDRESS);
 
-  _delay_ms(FCONV);
+  _delay_us(FCONV);
 
   //Read x and y values
    joystick->xRaw = XMEM_Read(0x00, ADC_BASE_ADDRESS);
    joystick->yRaw = XMEM_Read(0x00,ADC_BASE_ADDRESS);
 
   //Check if we should apply offset
-  if (data->xRaw < cal->xOffset || data->yRaw < cal->yOffset)
+  if (joystick->xRaw < joystick->xOffset || joystick->yRaw < joystick->yOffset)
   {
     return;
   }
 
   // Add offsett to reed value
-  data->xRaw -= cal->xOffset;
-  data->yRaw -= cal->yOffset;
+  joystick->xRaw -= joystick->xOffset;
+  joystick->yRaw -= joystick->yOffset;
 
   return;
 }
@@ -67,7 +67,7 @@ struct Joystick ADC_InitJoystick(void) {
     joystick.xOffset = (joystick.xOffset * i + data[0] - 127) / (i + 1); // Finds the offset of ideal value "127", from
     joystick.yOffset = (joystick.yOffset * i + data[1] - 127) / (i + 1); // Same for y value
   }
-  printf("Calibrated values is: {%d,%d} \r \n", cal->xOffset, cal->yOffset);
+  printf("Calibrated values is: {%d,%d} \r \n", joystick->xOffset, joystick->yOffset);
   return joystick;
 }
 
@@ -101,8 +101,7 @@ enum JoystickDirection ADC_GetJoystickDirection(struct Joystick *joystick) {
   } else if(!(PINB & (1 << PINB2))) 
   {
     return PRESSED;
-  }
-  else {
+  } else {
     return NEUTRAL;
   }
 }
