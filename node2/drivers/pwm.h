@@ -17,6 +17,6 @@ void pwm_init(void);
 
 void pwm_set_duty_cycle(uint16_t cycle_percentage);
 
-void pwm_set_servo_angle(enum JoystickDirection direction);
+//void pwm_set_servo_angle(enum JoystickDirection direction);
 
 #endif

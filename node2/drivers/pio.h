@@ -6,10 +6,15 @@
 #include <stdlib.h>
 #include "sam.h"
 
-void PIO_InitPin(Pio *reg, uint32_t pin);
+#define PIO_PERIPH_A 0
+#define PIO_PERIPH_B 1
 
-void PIO_SetPin(Pio *reg, uint32_t pin);
+void pio_init_pin_for_peripheral(Pio *reg, uint32_t pin, uint32_t peripheral);
 
-void PIO_ClearPin(Pio *reg, uint32_t pin);
+void pio_init_pin_as_output(Pio* reg, uint32_t pin);
+
+void pio_set_pin(Pio *reg, uint32_t pin);
+
+void pio_clear_pin(Pio *reg, uint32_t pin);
 
 #endif

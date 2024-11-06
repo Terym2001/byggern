@@ -1,39 +1,60 @@
 #include "pio.h"
 
-void PIO_InitPin(Pio *reg, uint32_t pin)
+void pio_init_pin_for_peripheral(Pio *reg, uint32_t pin, uint32_t peripheral)
 {
-  if (reg != PIOB && reg != PIOA)
-  {
-    // ERROR:
-    printf("Invalid port\n");
-    exit(-1);
+  // Check that correct peripheral is choosen 
+  if (reg == PIOA) {
+      PMC->PMC_PCER0 |= PMC_PCER0_PID11;
+  } else if (reg == PIOB) {
+      PMC->PMC_PCER0 |= PMC_PCER0_PID12;
+  } else {
+    printf("Invalid port\n\r");
+    return;
   }
 
-  if (reg == PIOB)
-  {
-    PMC->PMC_PCER0 |= (1 << pin);  // Enable the clock for the peripheral
+  // Check that either peripheral A or B is choosen 
+  if (peripheral != 0 || peripheral != 1) {
+    printf("Invalid peripheral\n\r");
+    return;
   }
-  else
-  {
-    PMC->PMC_PCER1 |= (1 << pin);
-  }
+
   reg->PIO_ABSR |= (1 << pin);   // Peripheral AB select
-  reg->PIO_OER |= (1 << pin);    // Enable output on the pin
-  // reg->PIO_CODR |= (1 << pin);   // Set the output to low
-  reg->PIO_PDR |= (1 << pin);    // Enable the pin
-  //reg->PIO_MDDR |= (1 << pin);   // Disable the multi-driver
-  //reg->PIO_PUDR |= (1 << pin);   // Disable pull-up
+  reg->PIO_PDR |= (1 << pin);             // Enable the pin
+  reg->PIO_MDDR |= (1 << pin);            // Disable the multi-driver
 
+  // BUG: Dont think this is needed
+  //reg->PIO_OER |= (1 << pin);    // Enable output on the pin
   return ;
 }
 
-void PIO_SetPin(Pio *reg, uint32_t pin)
+void pio_init_pin_as_output(Pio* reg, uint32_t pin)
+{
+  if (reg == PIOA) {
+      PMC->PMC_PCER0 |= PMC_PCER0_PID11;
+  } else if (reg == PIOB) {
+      PMC->PMC_PCER0 |= PMC_PCER0_PID12;
+  } else if (reg == PIOC) {
+      PMC->PMC_PCER0 |= PMC_PCER0_PID13;
+  } else if (reg == PIOD) {
+      PMC->PMC_PCER0 |= PMC_PCER0_PID14;
+  } else {
+    printf("Invalid port\n\r");
+    return;
+  }
+
+  reg->PIO_PER  |= (1 << pin);
+  reg->PIO_OER  |= (1 << pin);
+  reg->PIO_MDDR |= (1 << pin);
+  return;
+}
+
+void pio_set_pin(Pio *reg, uint32_t pin)
 {
   reg->PIO_SODR |= (1 << pin);
   return;
 }
 
-void PIO_ClearPin(Pio *reg, uint32_t pin)
+void pio_clear_pin(Pio *reg, uint32_t pin)
 {
   reg->PIO_CODR |= (1 << pin);
   return;
