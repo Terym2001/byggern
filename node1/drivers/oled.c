@@ -140,18 +140,16 @@ void OLED_SubScreen(struct OLEDPosition *position)
 
   OLED_GotoPage(position, 1);
 
-  struct CalibrateADC cal = {0};
-  struct ADCValues adc_values = {0};
+  struct Joystick joststick = ADC_InitJoystick();
   enum JoystickDirection direction = NEUTRAL;
 
-  ADC_Calibrator(&cal);
   //Function pointer to start new sub-menu
   void (*ChangeScreen)(struct OLEDPosition *position);
   ChangeScreen = NULL;
   while (1)
   {
-    ADC_Read(&adc_values, &cal);       
-    direction = ADC_GetJoystickDirection(&adc_values); //TODO: Change name of adc_values 
+    ADC_Read(&joststick);       
+    direction = ADC_GetJoystickDirection(&joststick); //TODO: Change name of adc_values 
     switch(direction)
     {
       case UP:
@@ -197,18 +195,16 @@ void OLED_Home(struct OLEDPosition *position)
 
   OLED_GotoPage(position, 1);
 
-  struct CalibrateADC cal = {0};
-  struct ADCValues adc_values = {0};
+  struct Joystick joystick = ADC_InitJoystick(); //TODO: When I think about it this could cause problems with cal if joystick is not in ideal position
   enum JoystickDirection direction = NEUTRAL;
 
-  ADC_Calibrator(&cal);
   //Function pointer to start new sub-menu
   void (*ChangeScreen)(struct OLEDPosition *position);
   ChangeScreen = NULL;
   while (1)
   {
-    ADC_Read(&adc_values, &cal);       
-    direction = ADC_GetJoystickDirection(&adc_values); //TODO: Change name of adc_values 
+    ADC_Read(&joystick);       
+    direction = ADC_GetJoystickDirection(&joystick); //TODO: Change name of adc_values 
     switch(direction)
     {
       case UP:

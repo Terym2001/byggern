@@ -31,28 +31,30 @@ void ADC_Init(void) {
   return;
 }
 
-void ADC_Read(struct ADCValues* data , struct CalibrateADC *cal) {
+void ADC_Read(struct Joystick *joystick) {
   XMEM_Write(0x00, 0x00, ADC_BASE_ADDRESS);
 
-  _delay_ms(FCONV);
+  _delay_us(FCONV);
 
-  for (uint8_t *ptr = &data->xRaw; ptr <= &data->rightSlider; ptr++) {
-    *ptr = XMEM_Read(0x00, ADC_BASE_ADDRESS);
-  }
+  //Read x and y values
+   joystick->xRaw = XMEM_Read(0x00, ADC_BASE_ADDRESS);
+   joystick->yRaw = XMEM_Read(0x00,ADC_BASE_ADDRESS);
 
-  if (data->xRaw < cal->xOffset || data->yRaw < cal->yOffset)
+  //Check if we should apply offset
+  if (joystick->xRaw < joystick->xOffset || joystick->yRaw < joystick->yOffset)
   {
     return;
   }
 
   // Add offsett to reed value
-  data->xRaw -= cal->xOffset;
-  data->yRaw -= cal->yOffset;
+  joystick->xRaw -= joystick->xOffset;
+  joystick->yRaw -= joystick->yOffset;
 
   return;
 }
 
-void ADC_Calibrator(struct CalibrateADC *cal) {
+struct Joystick ADC_InitJoystick(void) {
+  struct Joystick joystick = {0};
   uint8_t data[4] = {0};
   XMEM_Write(0x00, 0x00, ADC_BASE_ADDRESS);
   _delay_ms(FCONV);
@@ -62,15 +64,14 @@ void ADC_Calibrator(struct CalibrateADC *cal) {
       data[j] = XMEM_Read(0x00, ADC_BASE_ADDRESS);
     }
 
-    cal->xOffset = (cal->xOffset * i + data[0] - 127) / (i + 1); // Finds the offset of ideal value "127", from
-    cal->yOffset = (cal->yOffset * i + data[1] - 127) / (i + 1); // Same for y value
+    joystick.xOffset = (joystick.xOffset * i + data[0] - 127) / (i + 1); // Finds the offset of ideal value "127", from
+    joystick.yOffset = (joystick.yOffset * i + data[1] - 127) / (i + 1); // Same for y value
   }
-
-  printf("Calibrated values is: {%d,%d} \r \n", cal->xOffset, cal->yOffset);
-  return;
+  printf("Calibrated values is: {%d,%d} \r \n", joystick.xOffset, joystick.yOffset);
+  return joystick;
 }
 
-void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPositionPercent *Jpos) {
+void ADC_ConvertToPercent(uint8_t xRaw, uint8_t yRaw, struct JoystickPositionPercent *Jpos) {
   // Convert the raw ADC values [0,255] to percentage values [-100,100]
   Jpos->xPercent = (((uint16_t) xRaw * 200) / 255) - 100; // Scale 0-255 to -100 to 100
   Jpos->yPercent = (((uint16_t) yRaw * 200) / 255) - 100;
@@ -78,15 +79,15 @@ void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPosition
   return;
 }
 
-enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values) {
+enum JoystickDirection ADC_GetJoystickDirection(struct Joystick *joystick) {
   struct JoystickPositionPercent pos;
 
   // Get the X and Y percentage positions
-  ADC_GetJoystickPosition(adc_values->xRaw, adc_values->yRaw, &pos);
-
+  ADC_Read(joystick);
+  ADC_ConvertToPercent(joystick->xRaw, joystick->yRaw, &pos);
   // TODO: might need to test other thresholds
   // Define thresholds for detecting directions
-  int threshold = 60; // Example threshold for determining direction
+  uint8_t threshold = 60; 
 
   if (pos.xPercent < -threshold) {
     return LEFT;
@@ -99,8 +100,17 @@ enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values) {
   } else if(!(PINB & (1 << PINB2))) 
   {
     return PRESSED;
-  }
-  else {
+  } else {
     return NEUTRAL;
   }
+}
+
+struct JoystickPositionPercent ADC_GetJoystickPercent() {
+  struct JoystickPositionPercent pos;
+  struct Joystick joystick = {0};
+
+  ADC_Read(&joystick);
+  ADC_ConvertToPercent(joystick.xRaw, joystick.yRaw, &pos);
+
+  return pos;
 }
