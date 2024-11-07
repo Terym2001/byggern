@@ -3,6 +3,9 @@
 
 void pwm_init(void)
 {
+  // PMC->PMC_WPMR |= (0x504D43 << 8); 
+  // PMC->PMC_WPMR &= ~(1 << 0);
+
   // Enable the peripheral PWM clock
   PMC->PMC_PCER1 = (PMC_PCER1_PID36);
 
