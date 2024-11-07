@@ -67,7 +67,7 @@ struct Joystick ADC_InitJoystick(void) {
     joystick.xOffset = (joystick.xOffset * i + data[0] - 127) / (i + 1); // Finds the offset of ideal value "127", from
     joystick.yOffset = (joystick.yOffset * i + data[1] - 127) / (i + 1); // Same for y value
   }
-  printf("Calibrated values is: {%d,%d} \r \n", joystick->xOffset, joystick->yOffset);
+  printf("Calibrated values is: {%d,%d} \r \n", joystick.xOffset, joystick.yOffset);
   return joystick;
 }
 
@@ -85,7 +85,6 @@ enum JoystickDirection ADC_GetJoystickDirection(struct Joystick *joystick) {
   // Get the X and Y percentage positions
   ADC_Read(joystick);
   ADC_ConvertToPercent(joystick->xRaw, joystick->yRaw, &pos);
-
   // TODO: might need to test other thresholds
   // Define thresholds for detecting directions
   uint8_t threshold = 60; 
