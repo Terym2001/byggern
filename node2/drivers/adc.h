@@ -1,5 +1,9 @@
+#pragma once
+
 #include "sam.h"
 
-void adc_init();
+#define ADC_LOWTHRESHOLD 2000
+#define ADC_HIGHTHRESHOLD 3000
 
+void adc_init();
 
