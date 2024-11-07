@@ -7,6 +7,7 @@
 #include "drivers/time.h"
 #include "drivers/pio.h"
 #include "drivers/servo.h"
+#include "drivers/motor_controller.h"
 
 #define F_CPU 84000000
 
