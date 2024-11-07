@@ -12,22 +12,6 @@
 #define ADC_BASE_ADDRESS 0x1400
 #define ADC_MAX_ADDRESS 0x03FF
 
-// TODO
-#define JOYSTICK_X 0x1400
-#define JOYSTICK_Y 0x1401
-#define JOYSTICK_PRESS 0x1402
-
-struct CalibrateADC {
-  int8_t xOffset;
-  int8_t yOffset;
-};
-
-struct ADCValues {
-  uint8_t xRaw;
-  uint8_t yRaw;
-  uint8_t leftSlider;
-  uint8_t rightSlider;
-};
 
 struct JoystickPositionPercent {
   int16_t xPercent;
@@ -36,16 +20,29 @@ struct JoystickPositionPercent {
 
 enum JoystickDirection { LEFT, RIGHT, UP, DOWN, PRESSED, NEUTRAL };
 
+struct Joystick{
+  //Values from 0 to 255
+  uint8_t xRaw;
+  uint8_t yRaw;
+  //Offset of the joystick
+  int8_t xOffset;
+  int8_t yOffset;
+  //Direction
+  enum JoystickDirection direction;
+};
+
 void ADC_InitializeExternalClock(void);
 
 void ADC_Init(void);
 
-void ADC_Read(struct ADCValues *data, struct CalibrateADC *cal);
+struct Joystick ADC_InitJoystick(void);
 
-void ADC_Calibrator(struct CalibrateADC *cal);
+void ADC_Read(struct Joystick *joystick);
 
-void ADC_GetJoystickPosition(uint8_t xRaw, uint8_t yRaw, struct JoystickPositionPercent *Jpos);
+void ADC_ConvertToPercent(uint8_t xRaw, uint8_t yRaw, struct JoystickPositionPercent *Jpos);
 
-enum JoystickDirection ADC_GetJoystickDirection(struct ADCValues *adc_values);
+struct JoystickPositionPercent ADC_GetJoystickPercent();
+
+enum JoystickDirection ADC_GetJoystickDirection(struct Joystick *joystick);
 
 #endif

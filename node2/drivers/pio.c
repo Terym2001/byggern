@@ -9,13 +9,20 @@ void PIO_InitPin(Pio *reg, uint32_t pin)
     exit(-1);
   }
 
-  PMC->PMC_PCER0 |= (1 << pin);  // Enable the clock for the peripheral
+  if (reg == PIOB)
+  {
+    PMC->PMC_PCER0 |= (1 << pin);  // Enable the clock for the peripheral
+  }
+  else
+  {
+    PMC->PMC_PCER1 |= (1 << pin);
+  }
   reg->PIO_ABSR |= (1 << pin);   // Peripheral AB select
   reg->PIO_OER |= (1 << pin);    // Enable output on the pin
-  reg->PIO_CODR |= (1 << pin);   // Set the output to low
-  reg->PIO_PER |= (1 << pin);    // Enable the pin
-  reg->PIO_MDDR |= (1 << pin);   // Disable the multi-driver
-  reg->PIO_PUDR |= (1 << pin);   // Disable pull-up
+  // reg->PIO_CODR |= (1 << pin);   // Set the output to low
+  reg->PIO_PDR |= (1 << pin);    // Enable the pin
+  //reg->PIO_MDDR |= (1 << pin);   // Disable the multi-driver
+  //reg->PIO_PUDR |= (1 << pin);   // Disable pull-up
 
   return ;
 }

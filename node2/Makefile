@@ -13,6 +13,7 @@ SOURCE_FILES = \
 	drivers/pio.c \
 	drivers/can.c \
 	drivers/adc.c \
+	drivers/pwm.c \
 	#test/can_test.c \
 #	../path_to/uart.c \
 #   filename1.c \
