@@ -3,9 +3,6 @@
 
 void pwm_init(void)
 {
-  // PMC->PMC_WPMR |= (0x504D43 << 8); 
-  // PMC->PMC_WPMR &= ~(1 << 0);
-
   // Enable the peripheral PWM clock
   PMC->PMC_PCER1 = (PMC_PCER1_PID36);
 
@@ -31,7 +28,7 @@ void pwm_init(void)
   PWM->PWM_CH_NUM[1].PWM_CPRD = CALCULATED_CPRD;
 
   // Configuration of the duty-cycle
-  PWM->PWM_CH_NUM[0].PWM_CDTY = (10 * CALCULATED_CPRD) / 1000; // BUG: dont know real value
+  PWM->PWM_CH_NUM[0].PWM_CDTY = (25 * CALCULATED_CPRD) / 1000; // BUG: dont know real value
   PWM->PWM_CH_NUM[1].PWM_CDTY = (75 * CALCULATED_CPRD) / 1000;
 
   // Enable of the PWM channels

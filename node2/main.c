@@ -40,7 +40,7 @@ int main()
   enum JoystickDirection direction = NEUTRAL;
 
 
-  //pio_init_pin_as_output(PIOC, 16);
+  pio_init_pin_as_output(PIOC, 16);
 
   while (1)
   {

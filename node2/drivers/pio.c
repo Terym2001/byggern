@@ -13,7 +13,7 @@ void pio_init_pin_for_peripheral(Pio *reg, uint32_t pin, uint32_t peripheral)
   }
 
   // Check that either peripheral A or B is choosen 
-  if (peripheral != 0 || peripheral != 1) {
+  if (peripheral != 0 && peripheral != 1) {
     printf("Invalid peripheral\n\r");
     return;
   }
@@ -21,9 +21,6 @@ void pio_init_pin_for_peripheral(Pio *reg, uint32_t pin, uint32_t peripheral)
   reg->PIO_ABSR |= (1 << pin);   // Peripheral AB select
   reg->PIO_PDR |= (1 << pin);             // Enable the pin
   reg->PIO_MDDR |= (1 << pin);            // Disable the multi-driver
-
-  // BUG: Dont think this is needed
-  //reg->PIO_OER |= (1 << pin);    // Enable output on the pin
   return ;
 }
 
