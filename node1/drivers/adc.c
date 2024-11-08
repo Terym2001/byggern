@@ -66,6 +66,9 @@ struct Joystick ADC_InitJoystick(void) {
 
     joystick.xOffset = (joystick.xOffset * i + data[0] - 127) / (i + 1); // Finds the offset of ideal value "127", from
     joystick.yOffset = (joystick.yOffset * i + data[1] - 127) / (i + 1); // Same for y value
+
+    joystick.xOffset = joystick.xOffset / 2;
+    joystick.yOffset = joystick.yOffset / 2;
   }
   printf("Calibrated values is: {%d,%d} \r \n", joystick.xOffset, joystick.yOffset);
   return joystick;
@@ -89,6 +92,10 @@ enum JoystickDirection ADC_GetJoystickDirection(struct Joystick *joystick) {
   // Define thresholds for detecting directions
   uint8_t threshold = 60; 
 
+  if (!(PINB & (1 << PINB2))){
+    return PRESSED;
+  }
+
   if (pos.xPercent < -threshold) {
     return LEFT;
   } else if (pos.xPercent > threshold) {
@@ -97,9 +104,6 @@ enum JoystickDirection ADC_GetJoystickDirection(struct Joystick *joystick) {
     return DOWN;
   } else if (pos.yPercent > threshold) {
     return UP;
-  } else if(!(PINB & (1 << PINB2))) 
-  {
-    return PRESSED;
   } else {
     return NEUTRAL;
   }

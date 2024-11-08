@@ -10,10 +10,7 @@ int main(void) {
 
   XMEM_Init();
   ADC_Init();
-  struct ADCValues adc_values;
-
-  struct CalibrateADC calibrate;
-  ADC_Calibrator(&calibrate);
+  struct Joystick joystick = ADC_InitJoystick();
 
   enum JoystickDirection direction = NEUTRAL;
 
@@ -23,9 +20,7 @@ int main(void) {
 
   while(1)
   {
-    ADC_Read(&adc_values, &calibrate);
-    
-    direction = ADC_GetJoystickDirection(&adc_values); 
+    direction = ADC_GetJoystickDirection(&joystick); 
 
     // char* direction_str = "HMM";
     // switch (direction)
