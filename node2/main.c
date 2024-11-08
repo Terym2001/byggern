@@ -18,7 +18,8 @@ int main()
   //Disable Watchdog Timer
   WDT->WDT_MR = WDT_MR_WDDIS;
 
-  // Initialize the UART
+  adc_init();
+
   uart_init(F_CPU, 9600);
 
   // Initialize the PWM

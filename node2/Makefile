@@ -12,6 +12,7 @@ SOURCE_FILES = \
 	drivers/time.c \
 	drivers/pio.c \
 	drivers/can.c \
+	drivers/adc.c \
 	drivers/pwm.c \
 	drivers/servo.c
 	#test/can_test.c \
