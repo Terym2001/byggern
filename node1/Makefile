@@ -4,14 +4,14 @@ RESOURCES_DIR := resources
 
 SOURCE_FILES := main.c \
 							  $(DRIVER_DIR)/usart.c \
-								$(DRIVER_DIR)/oled.c \
 								$(DRIVER_DIR)/xmem.c  \
 								$(DRIVER_DIR)/sram.c  \
 								$(DRIVER_DIR)/adc.c  \
 								$(DRIVER_DIR)/spi.c  \
 								$(DRIVER_DIR)/mcp2515.c  \
 								$(DRIVER_DIR)/can.c  \
-								$(RESOURCES_DIR)/fonts.c \
+								# $(RESOURCES_DIR)/fonts.c \
+								# $(DRIVER_DIR)/oled.c \
 								# $(TEST_DIR)/sram_test.c \
 								# $(TEST_DIR)/can_test.c \
 

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "drivers/can.h"
 
+
 int main(void) {
   // Initialize uart with baud rate and frameformat
   USART_Init(MYUBRR);
