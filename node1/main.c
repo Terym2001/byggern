@@ -22,29 +22,29 @@ int main(void) {
   {
     direction = ADC_GetJoystickDirection(&joystick); 
 
-    // char* direction_str = "HMM";
-    // switch (direction)
-    // {
-    //   case LEFT:
-    //     direction_str = "LEFT";
-    //     break;
-    //   case RIGHT:
-    //     direction_str = "RIGHT";
-    //     break;
-    //   case UP:
-    //     direction_str = "UP";
-    //     break;
-    //   case DOWN:
-    //     direction_str = "DOWN";
-    //     break;
-    //   case PRESSED:
-    //     direction_str = "PRESSED";
-    //     break;
-    //   case NEUTRAL:
-    //     direction_str = "NEUTRAL";
-    //     break;
-    // }
-    // printf("State: %s\n\r", direction_str);
+    char* direction_str = "HMM";
+    switch (direction)
+    {
+      case LEFT:
+        direction_str = "LEFT";
+        break;
+      case RIGHT:
+        direction_str = "RIGHT";
+        break;
+      case UP:
+        direction_str = "UP";
+        break;
+      case DOWN:
+        direction_str = "DOWN";
+        break;
+      case PRESSED:
+        direction_str = "PRESSED";
+        break;
+      case NEUTRAL:
+        direction_str = "NEUTRAL";
+        break;
+    }
+    printf("State: %s\n\r", direction_str);
     msg.data[0] = direction; 
 
     // TODO: NEEED WAIT IN CAN_SEND

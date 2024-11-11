@@ -7,6 +7,8 @@
 #include "drivers/time.h"
 #include "drivers/pio.h"
 #include "drivers/servo.h"
+#include "drivers/timer_counter.h"
+#include "drivers/encoder.h"
 
 #define F_CPU 84000000
 
@@ -40,40 +42,44 @@ int main()
   uint8_t status = 0;
   enum JoystickDirection direction = NEUTRAL;
 
-
   pio_init_pin_as_output(PIOC, 16);
+  pio_set_pin(PIOC, 16);
+
+  encoder_init();
+  tc_init(F_CPU / 2000);
 
   while (1)
   {
     status = can_rx(&msg);
-    
-    if (status != 0)
-    {
-      direction = (enum JoystickDirection) msg.byte[0];
-      char* direction_str = "HMM";
-      switch (direction)
-      {
-        case LEFT:
-          direction_str = "LEFT";
-          break;
-        case RIGHT:
-          direction_str = "RIGHT";
-          break;
-        case UP:
-          direction_str = "UP";
-          break;
-        case DOWN:
-          direction_str = "DOWN";
-          break;
-        case PRESSED:
-          direction_str = "PRESSED";
-          break;
-        case NEUTRAL:
-          direction_str = "NEUTRAL";
-          break;
-      }
-      printf("State: %s\n\r", direction_str);
-      servo_set_angle(direction);
-    }
+    //
+    //if (status != 0)
+    //{
+    //  direction = (enum JoystickDirection) msg.byte[0];
+    //  char* direction_str = "HMM";
+    //  // switch (direction)
+    //  // {
+    //  //   case LEFT:
+    //  //     direction_str = "LEFT";
+    //  //     break;
+    //  //   case RIGHT:
+    //  //     direction_str = "RIGHT";
+    //  //     break;
+    //  //   case UP:
+    //  //     direction_str = "UP";
+    //  //     break;
+    //  //   case DOWN:
+    //  //     direction_str = "DOWN";
+    //  //     break;
+    //  //   case PRESSED:
+    //  //     direction_str = "PRESSED";
+    //  //     break;
+    //  //   case NEUTRAL:
+    //  //     direction_str = "NEUTRAL";
+    //  //     break;
+    //  // }
+    //  // printf("State: %s\n\r", direction_str);
+    //  //printf("speed: hello\n");
+    //  servo_set_angle(direction);
+    // }
   }
 }
