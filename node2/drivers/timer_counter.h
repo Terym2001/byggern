@@ -8,4 +8,6 @@
 
 void tc_init(unsigned long period);
 
+void tc_set_custom(void (*ptr)(void));
+
 #endif

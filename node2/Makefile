@@ -17,7 +17,8 @@ SOURCE_FILES = \
 	drivers/servo.c \
 	drivers/timer_counter.c \
 	drivers/encoder.c \
-	drivers/motor.c
+	drivers/motor.c   \
+	drivers/motor_controller.c
 	#test/can_test.c \
 #	../path_to/uart.c \
 #   filename1.c \

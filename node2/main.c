@@ -10,8 +10,10 @@
 #include "drivers/timer_counter.h"
 #include "drivers/encoder.h"
 #include "drivers/motor.h"
+#include "drivers/motor_controller.h"
+#define F_CPU 84000000 
 
-#define F_CPU 84000000
+MotorController motor = {0};
 
 int main()
 {
@@ -47,15 +49,15 @@ int main()
   pio_init_pin_as_output(PIOC, 14);
   pio_set_pin(PIOC, 14);
 
-  //motor_init();
+  motor_init();
+  motor_controller_init(&motor,1.0, 0.01, 900000.0, 0.0); //Period T = 1us I think 
 
   encoder_init();
-  tc_init(F_CPU / 2000);
-
+  //tc_init(F_CPU / 2000);
+  //tc_set_custom(&mc_motor_step);
   while (1)
   {
     status = can_rx(&recieved_can);
-    
     if (status != 0)
     {
       direction = (enum JoystickDirection) recieved_can.byte[0];
@@ -82,9 +84,13 @@ int main()
           break;
       }
       //printf("state: %s\n\r", direction_str);
+
+      //printf("setpoint: %f\n\r", motor.setpoint);
+      printf("Direction: %s\n\r", direction_str);
       servo_set_angle(direction);
-      motor_set_direction(direction);
-      motor_set_speed(recieved_can.byte[1]);
+      //motor_set_direction(direction);
+      //motor.setpoint = (recieved_can.byte[1]/100.0f);
+      //motor_set_speed(recieved_can.byte[1]);
     }
   }
 }

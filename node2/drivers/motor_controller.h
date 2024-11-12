@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include "sam.h"
 
+#define MAX_ENCODER_VALUE 5580.0
+#define MIN_ENCODER_VALUE 0.0
+
 typedef struct Pid_t
 {
   float Kp;
@@ -49,5 +52,7 @@ void mc_send_input(MotorController *mc);
 void mc_measure_state(MotorController *mc);
 
 void mc_compute_error(MotorController *mc);
+
+void mc_motor_step(void);
 
 #endif
