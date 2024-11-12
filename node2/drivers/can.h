@@ -12,6 +12,7 @@
 #define PROPSEG (2L*190L*10L**(-9L))
 #define PLACE1 (BITTIME - TQ - PROPSEG)
 
+
 // Struct with bit timing information
 // See `can_init` for usage example
 typedef struct CanInit CanInit;
@@ -89,6 +90,8 @@ struct CanMsg {
         Byte8       byte8;
     };    
 };
+
+extern CanMsg recieved_can;
 
 // Send a CAN message on the bus. 
 // Blocks if the bus does not receive the message (typically because one of the 

@@ -1,5 +1,7 @@
 #include "timer_counter.h"
 
+void (*tc_ptr)(void);
+
 void tc_init(unsigned long period)
 {
   // Enable timer counter clock for TC0
@@ -34,9 +36,18 @@ void tc_init(unsigned long period)
   return;
 }
 
+void tc_set_custom(void (*ptr)(void))
+{
+  tc_ptr = ptr;
+  return;
+}
+
 void TC0_Handler(void)
 {
-  printf("position: %d\n\r", encoder_read());
+  // Handle motor controll
+  //tc_ptr();
+
+  printf("encoder: %i\n\r", encoder_read());
 
   uint32_t status = REG_TC0_SR0;
   NVIC_ClearPendingIRQ(TC0_IRQn);

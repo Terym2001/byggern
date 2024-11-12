@@ -14,8 +14,8 @@
 
 
 struct JoystickPositionPercent {
-  int16_t xPercent;
-  int16_t yPercent;
+  int8_t xPercent;
+  int8_t yPercent;
 };
 
 enum JoystickDirection { LEFT, RIGHT, UP, DOWN, PRESSED, NEUTRAL };

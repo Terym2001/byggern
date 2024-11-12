@@ -1,4 +1,5 @@
 #include "main.h"
+#include "drivers/adc.h"
 #include "drivers/can.h"
 
 
@@ -11,6 +12,7 @@ int main(void) {
   XMEM_Init();
   ADC_Init();
   struct Joystick joystick = ADC_InitJoystick();
+  struct JoystickPositionPercent joystick_percent;
 
   enum JoystickDirection direction = NEUTRAL;
 
@@ -21,6 +23,7 @@ int main(void) {
   while(1)
   {
     direction = ADC_GetJoystickDirection(&joystick); 
+    joystick_percent = ADC_GetJoystickPercent();
 
     char* direction_str = "HMM";
     switch (direction)
@@ -44,8 +47,10 @@ int main(void) {
         direction_str = "NEUTRAL";
         break;
     }
-    printf("State: %s\n\r", direction_str);
     msg.data[0] = direction; 
+    msg.data[1] = joystick_percent.xPercent;
+    msg.data[2] = joystick_percent.yPercent;
+    printf("%d, %d\n\r", joystick_percent.xPercent, joystick_percent.yPercent);
 
     // TODO: NEEED WAIT IN CAN_SEND
     CAN_Send(&msg, 0, TXB0);

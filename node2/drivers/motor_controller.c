@@ -1,4 +1,5 @@
 #include "motor_controller.h"
+#include "encoder.h"
 
 void motor_controller_init(MotorController *mc, float Kp, float Ki, float Kd, float r)
 {
@@ -44,17 +45,11 @@ void mc_compute_input(MotorController *mc)
   return;
 }
 
-// Implement function to compute step time (noe interrupt greier)
-void mc_compute_step_time(MotorController *mc)
-{
-
-  return;
-}
-
 // Implement function to send input to motor
 void mc_send_input(MotorController *mc)
 {
-  // Send input to motor
+  //motor_set_direction();
+  //motor_set_speed();
   return;
 }
 
@@ -68,7 +63,13 @@ void mc_compute_error(MotorController *mc)
 // Implement function to read actual encoder data
 void mc_measure_state(MotorController *mc)
 {
-  mc->state += mc->input;
+  int16_t y = encoder_read();
+  mc->state = y_prepr;
+  return;
+}
+
+void mc_motor_step(void)
+{
   return;
 }
 

@@ -28,7 +28,7 @@ void pwm_init(void)
   PWM->PWM_CH_NUM[1].PWM_CPRD = CALCULATED_CPRD;
 
   // Configuration of the duty-cycle
-  PWM->PWM_CH_NUM[0].PWM_CDTY = (25 * CALCULATED_CPRD) / 1000; // BUG: dont know real value
+  PWM->PWM_CH_NUM[0].PWM_CDTY = (0 * CALCULATED_CPRD) / 1000; // BUG: dont know real value
   PWM->PWM_CH_NUM[1].PWM_CDTY = (75 * CALCULATED_CPRD) / 1000;
 
   // Enable of the PWM channels
@@ -40,18 +40,27 @@ void pwm_init(void)
 }
 
 //Insert dutcy_cycle as a promille value
-void pwm_set_duty_cycle(uint16_t duty_cycle)
+void pwm_set_duty_cycle(uint16_t cycle_percentage, uint8_t channel)
 {
-  if (duty_cycle < DUTY_CYCLE_LOWER_BOUND)
+  if (channel != 0 && channel != 1)
   {
-    duty_cycle = DUTY_CYCLE_LOWER_BOUND;
-  }
-  else if (duty_cycle > DUTY_CYCLE_UPPER_BOUND)
-  {
-    duty_cycle = DUTY_CYCLE_UPPER_BOUND;
+    printf("PWM_ERROR: Invalid channel\n\r");
+    return;
   }
 
-  PWM->PWM_CH_NUM[1].PWM_CDTY = (duty_cycle * CALCULATED_CPRD) / 1000;
+  if (channel == 1)
+  {
+    if (cycle_percentage < DUTY_CYCLE_LOWER_BOUND)
+    {
+      cycle_percentage = DUTY_CYCLE_LOWER_BOUND;
+    }
+    else if (cycle_percentage > DUTY_CYCLE_UPPER_BOUND)
+    {
+      cycle_percentage = DUTY_CYCLE_UPPER_BOUND;
+    }
+  }
+
+  PWM->PWM_CH_NUM[channel].PWM_CDTY = (cycle_percentage * CALCULATED_CPRD) / 1000;
   return;
 }
 
@@ -59,23 +68,17 @@ void pwm_set_servo_angle(enum JoystickDirection direction){
   //TODO: Change values after testing
   switch (direction)
   {
-  case LEFT:
-    pwm_set_duty_cycle(DUTY_CYCLE_LOWER_BOUND);
-    break;
-  case RIGHT:
-    pwm_set_duty_cycle(DUTY_CYCLE_UPPER_BOUND);
-    break;
   case UP:
-    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL + 10);
+    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL + 10, PWM_SERVO_CHANNEL);
     break;
   case DOWN:
-    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL - 10);
+    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL - 10, PWM_SERVO_CHANNEL);
     break;
   case PRESSED:
-    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL);
+    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL, PWM_SERVO_CHANNEL);
     break;
   case NEUTRAL:
-    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL);
+    pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL, PWM_SERVO_CHANNEL);
     break;
   default:
     break;
