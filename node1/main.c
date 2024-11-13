@@ -50,9 +50,9 @@ int main(void) {
         break;
     }
     msg.data[0] = direction; 
-    msg.data[1] = slider.left;
+    msg.data[1] = joystick.xRaw;
     msg.data[2] = joystick.yRaw;
-    printf("slider: %u\n\r", slider.left);
+    printf("x; %u\n\r", joystick.xRaw);
 
     // TODO: NEEED WAIT IN CAN_SEND
     CAN_Send(&msg, 0, TXB0);

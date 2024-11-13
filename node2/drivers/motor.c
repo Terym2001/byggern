@@ -26,7 +26,7 @@ void motor_set_speed(uint32_t speed)
 {
   uint32_t speed_abs = abs(speed);
   //printf("Speed: %i\n\r", speed);
-  if (speed_abs < 200)
+  if (speed_abs < 50)
   {
     speed_abs = 0;
   }

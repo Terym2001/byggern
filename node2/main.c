@@ -87,7 +87,7 @@ int main()
 
       //printf("setpoint: %f\n\r", motor.setpoint);
       //printf("Direction: %s\n\r", direction_str);
-      //servo_set_angle(direction);
+      servo_set_angle(direction);
       //motor_set_direction(direction);
       //motor_set_speed(recieved_can.byte[1]);
     }
