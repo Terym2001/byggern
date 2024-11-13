@@ -33,8 +33,7 @@ void motor_set_speed(int8_t speed)
   if(speed_abs > 100 || speed_abs < 0)
   {
     printf("Error speed to high\n\r");
-    speed_abs = 100;
-    return;
+    speed_abs = 80;
   }
 
   pwm_set_duty_cycle(speed_abs*10, PWM_MOTOR_CHANNEL);

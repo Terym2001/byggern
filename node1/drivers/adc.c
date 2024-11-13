@@ -90,7 +90,7 @@ enum JoystickDirection ADC_GetJoystickDirection(struct Joystick *joystick) {
   ADC_ConvertToPercent(joystick->xRaw, joystick->yRaw, &pos);
   // TODO: might need to test other thresholds
   // Define thresholds for detecting directions
-  uint8_t threshold = 60; 
+  uint8_t threshold = 50; 
 
   if (!(PINB & (1 << PINB2))){
     return PRESSED;

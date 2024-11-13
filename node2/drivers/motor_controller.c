@@ -18,7 +18,7 @@ void motor_controller_init(MotorController *mc, float Kp, float Ki, float Kd, fl
 
   mc->input = 0.0;
 
-  mc->T = 0.5; //TODO: Should lower this with interrupt
+  mc->T = 0.0005; //TODO: Should lower this with interrupt
 
   mc->max = 1.0;
   mc->min = -1.0;

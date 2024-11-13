@@ -50,11 +50,11 @@ int main()
   pio_set_pin(PIOC, 14);
 
   motor_init();
-  motor_controller_init(&motor,1.0, 0.01, 900000.0, 0.0); //Period T = 1us I think 
+  motor_controller_init(&motor,0.05, 0.0, 0.0, 0.0); //Period T = 1us I think 
 
   encoder_init();
-  //tc_init(F_CPU / 2000);
-  //tc_set_custom(&mc_motor_step);
+  tc_init(F_CPU / 1000*50);
+  tc_set_custom(&mc_motor_step);
   while (1)
   {
     status = can_rx(&recieved_can);
@@ -88,8 +88,8 @@ int main()
       //printf("setpoint: %f\n\r", motor.setpoint);
       printf("Direction: %s\n\r", direction_str);
       servo_set_angle(direction);
-      //motor_set_direction(direction);
-      //motor.setpoint = (recieved_can.byte[1]/100.0f);
+      motor_set_direction(direction);
+      motor.setpoint = (recieved_can.byte[1]/100.0f);
       //motor_set_speed(recieved_can.byte[1]);
     }
   }
