@@ -13,8 +13,9 @@ int main(void) {
   ADC_Init();
   struct Joystick joystick = ADC_InitJoystick();
   struct JoystickPositionPercent joystick_percent;
-
   enum JoystickDirection direction = NEUTRAL;
+
+  struct Slider slider;
 
   struct can_message msg;
   msg.id = 0x0F;
@@ -24,6 +25,7 @@ int main(void) {
   {
     direction = ADC_GetJoystickDirection(&joystick); 
     joystick_percent = ADC_GetJoystickPercent();
+    ADC_ReadSlider(&slider);
 
     char* direction_str = "HMM";
     switch (direction)
@@ -48,9 +50,9 @@ int main(void) {
         break;
     }
     msg.data[0] = direction; 
-    msg.data[1] = joystick_percent.xPercent;
-    msg.data[2] = joystick_percent.yPercent;
-    printf("%d, %d\n\r", joystick_percent.xPercent, joystick_percent.yPercent);
+    msg.data[1] = slider.left;
+    msg.data[2] = joystick.yRaw;
+    printf("slider: %u\n\r", slider.left);
 
     // TODO: NEEED WAIT IN CAN_SEND
     CAN_Send(&msg, 0, TXB0);

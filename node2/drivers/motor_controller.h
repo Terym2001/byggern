@@ -2,7 +2,10 @@
 #define _PID_H_
 
 #include <stdint.h>
+#include <stdio.h>
 #include "sam.h"
+#include "can.h"
+#include "motor.h"
 
 #define MAX_ENCODER_VALUE 5580.0
 #define MIN_ENCODER_VALUE 0.0
@@ -32,6 +35,7 @@ typedef struct MotorController_t
   float max;
   float min;
 
+  void (*get_setpoint)(struct MotorController_t *mc);
   void (*measure_state)(struct MotorController_t *mc);
   void (*compute_input)(struct MotorController_t *mc);
   void (*compute_error)(struct MotorController_t *mc);
@@ -52,6 +56,8 @@ void mc_send_input(MotorController *mc);
 void mc_measure_state(MotorController *mc);
 
 void mc_compute_error(MotorController *mc);
+
+void mc_get_setpoint(MotorController *mc);
 
 void mc_motor_step(void);
 

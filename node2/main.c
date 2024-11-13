@@ -13,6 +13,7 @@
 #include "drivers/motor_controller.h"
 #define F_CPU 84000000 
 
+CanMsg recieved_can;
 MotorController motor = {0};
 
 int main()
@@ -40,7 +41,6 @@ int main()
     .propag = 1
   };
 
-  CanMsg recieved_can;
 
   can_init(canInitParam, 0);
   uint8_t status = 0;
@@ -50,11 +50,11 @@ int main()
   pio_set_pin(PIOC, 14);
 
   motor_init();
-  motor_controller_init(&motor,0.05, 0.0, 0.0, 0.0); //Period T = 1us I think 
+  motor_controller_init(&motor, 1.0, 0.0, 0.0, 0.0); //Period T = 1us I think 
 
   encoder_init();
-  tc_init(F_CPU / 1000*50);
   tc_set_custom(&mc_motor_step);
+  tc_init(F_CPU / (1000 * 50));
   while (1)
   {
     status = can_rx(&recieved_can);
@@ -86,10 +86,9 @@ int main()
       //printf("state: %s\n\r", direction_str);
 
       //printf("setpoint: %f\n\r", motor.setpoint);
-      printf("Direction: %s\n\r", direction_str);
-      servo_set_angle(direction);
-      motor_set_direction(direction);
-      motor.setpoint = (recieved_can.byte[1]/100.0f);
+      //printf("Direction: %s\n\r", direction_str);
+      //servo_set_angle(direction);
+      //motor_set_direction(direction);
       //motor_set_speed(recieved_can.byte[1]);
     }
   }

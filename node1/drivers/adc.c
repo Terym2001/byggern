@@ -53,6 +53,24 @@ void ADC_Read(struct Joystick *joystick) {
   return;
 }
 
+void ADC_ReadSlider(struct Slider *slider) {
+  XMEM_Write(0x00, 0x00, ADC_BASE_ADDRESS);
+
+  _delay_us(FCONV);
+
+  // Skip joystick c and y
+  for (int i = 0; i < 2; i++)
+  {
+    XMEM_Read(0x00, ADC_BASE_ADDRESS);
+  }
+
+  //Read x and y values
+  slider->left = XMEM_Read(0x00, ADC_BASE_ADDRESS);
+  slider->right = XMEM_Read(0x00,ADC_BASE_ADDRESS);
+
+  return;
+}
+
 struct Joystick ADC_InitJoystick(void) {
   struct Joystick joystick = {0};
   uint8_t data[4] = {0};
@@ -78,7 +96,6 @@ void ADC_ConvertToPercent(uint8_t xRaw, uint8_t yRaw, struct JoystickPositionPer
   // Convert the raw ADC values [0,255] to percentage values [-100,100]
   Jpos->xPercent = (((uint16_t) xRaw * 200) / 255) - 100; // Scale 0-255 to -100 to 100
   Jpos->yPercent = (((uint16_t) yRaw * 200) / 255) - 100;
-
   return;
 }
 

@@ -12,6 +12,6 @@ void motor_init(void);
 
 void motor_set_direction(enum JoystickDirection direction);
 
-void motor_set_speed(int8_t speed);
+void motor_set_speed(uint32_t speed);
 
 #endif

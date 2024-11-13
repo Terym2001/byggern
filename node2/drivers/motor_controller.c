@@ -1,5 +1,6 @@
 #include "motor_controller.h"
 #include "encoder.h"
+#include "motor.h"
 
 extern MotorController motor; //Get the motor from main
 
@@ -18,12 +19,13 @@ void motor_controller_init(MotorController *mc, float Kp, float Ki, float Kd, fl
 
   mc->input = 0.0;
 
-  mc->T = 0.0005; //TODO: Should lower this with interrupt
+  mc->T = 0.02; //TODO: Should lower this with interrupt
 
   mc->max = 1.0;
   mc->min = -1.0;
 
   // Assign function pointers
+  mc->get_setpoint = &mc_get_setpoint;
   mc->measure_state = &mc_measure_state;
   mc->compute_input = &mc_compute_input;
   mc->compute_error = &mc_compute_error;
@@ -50,10 +52,25 @@ void mc_compute_input(MotorController *mc)
 // Implement function to send input to motor
 void mc_send_input(MotorController *mc)
 {
-  //motor_set_direction();
-  //printf("Input before modification: %f\n\r", mc->input);
-  int8_t speed = (int8_t)(mc->input * 127);
-  //printf("Input: %i\n\r", speed);
+  enum JoystickDirection direction = NEUTRAL;
+  char* dir_str = "NEUTRAL";
+
+  // TODO: Implement better way to determine direction
+  if (mc->input > 0)
+  {
+    direction = RIGHT;
+    dir_str = "RIGHT";
+  }
+  else if (mc->input < 0)
+  {
+    direction = LEFT;
+    dir_str = "LEFT";
+  } 
+
+  motor_set_direction(direction);
+  
+  uint32_t speed = abs((int32_t)(mc->input * 1000));
+  //printf("dir: %s, speed: %u\n\r", dir_str, speed);
   motor_set_speed(speed);
   return;
 }
@@ -68,19 +85,27 @@ void mc_compute_error(MotorController *mc)
 // Implement function to read actual encoder data
 void mc_measure_state(MotorController *mc)
 {
-  int16_t y = encoder_read();
+  uint16_t y = abs(encoder_read());
   float y_prepr = y/MAX_ENCODER_VALUE; //TODO: Maybe change to double if needed
-  //printf("Encoder: %f\n\r", y_prepr);
   mc->state = y_prepr;
+  return;
+}
+
+void mc_get_setpoint(MotorController *mc)
+{
+  mc->setpoint = (float) recieved_can.byte[1] / 255;
   return;
 }
 
 
 void mc_motor_step(void)
 {
+  motor.get_setpoint(&motor);
   motor.measure_state(&motor);
   motor.compute_error(&motor);
+  //printf("setpoint: %f2 State: %f2, Error: %f2\n\r", motor.setpoint, motor.state, motor.error);
   motor.compute_input(&motor);
+  printf("r: %f, y: %f, u: %f\n\r", motor.setpoint, motor.state, motor.input);
   motor.send_input(&motor);
   return;
 }

@@ -45,9 +45,7 @@ void tc_set_custom(void (*ptr)(void))
 void TC0_Handler(void)
 {
   // Handle motor controll
-  //tc_ptr();
-
-  //printf("encoder: %i\n\r", encoder_read());
+  tc_ptr();
 
   uint32_t status = REG_TC0_SR0;
   NVIC_ClearPendingIRQ(TC0_IRQn);
