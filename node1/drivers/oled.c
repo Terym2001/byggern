@@ -185,13 +185,13 @@ void OLED_SubScreen(struct OLEDPosition *position)
   }
 }
 
-void OLED_Home(struct OLEDPosition *position)
+void OLED_Home(struct OLEDPosition *position, enum GameSate *game_state)
 {
   OLED_ClearScreen(position);
 
   OLED_PrintString(position, "Play Game!\n\n");
   OLED_PrintString(position, "Secret game!\n\n");
-  OLED_PrintString(position, "Otions\n\n");
+  OLED_PrintString(position, "Options\n\n");
 
   OLED_GotoPage(position, 1);
 
@@ -212,7 +212,6 @@ void OLED_Home(struct OLEDPosition *position)
         {
           position->page -= 2; 
         }
-        printf("UP\n\r");
         OLED_HighlightPage(position, position->page);
         break;
       case DOWN:
@@ -220,23 +219,25 @@ void OLED_Home(struct OLEDPosition *position)
         {
           position->page += 2;
         }
-        printf("DOWN\n\r");
         OLED_HighlightPage(position, position->page);
         break;
       //TODO:Implement so that this only happens when we are at correct page
       case PRESSED:
-        ChangeScreen = &OLED_SubScreen;
-        printf("Changing to subscreen \n\r");//TODO: This can be removed when it checks btn
-         _delay_ms(5000);
+        if (position->page == 1)
+        {
+          printf("Launching Game!! \n\r");//TODO: This can be removed when it checks btn
+          *game_state = PLAY;
+          return;
+        }
       default:
         break;
     }
-     // Call the function if the function pointer has been set
-    if (ChangeScreen != NULL)
-    {
-      ChangeScreen(position);  // Call OLED_SubScreen
-      return;  // Exit the current loop after changing the screen
-    }
+    // Call the function if the function pointer has been set
+    //if (ChangeScreen != NULL)
+    //{
+    //  ChangeScreen(position);  // Call OLED_SubScreen
+    //  return;  // Exit the current loop after changing the screen
+    //}
     _delay_ms(500);
   }
   return;

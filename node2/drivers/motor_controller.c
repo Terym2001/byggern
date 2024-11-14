@@ -11,7 +11,18 @@ void motor_controller_init(MotorController *mc, float Kp, float Ki, float Kd, fl
   mc->pid.Kd = Kd;
 
   mc->setpoint = r;
+  for (uint8_t i = 0; i < SAMPLES; i++)
+  {
+    mc->setpoint_prev[i] = 0.0;
+  }
+  mc->setpoint_count = 0;
+
   mc->state = 0.0;
+  for (uint8_t i = 0; i < SAMPLES; i++)
+  {
+    mc->state_prev[i] = 0.0;
+  }
+  mc->state_count = 0;
 
   mc->error = 0.0;
   mc->error_prev = 0.0;
@@ -19,7 +30,7 @@ void motor_controller_init(MotorController *mc, float Kp, float Ki, float Kd, fl
 
   mc->input = 0.0;
 
-  mc->T = 0.02; //TODO: Should lower this with interrupt
+  mc->T = 0.005; //TODO: Should lower this with interrupt
 
   mc->max = 1.0;
   mc->min = -1.0;
@@ -43,6 +54,11 @@ void mc_compute_input(MotorController *mc)
   float proporsional_effect = mc->pid.Kp * mc->error;
   float integral_effect = mc->T * mc->pid.Ki * mc->integral;
   float derivative_effect = (mc->pid.Kd / mc->T) * (mc->error - mc->error_prev);
+
+  if (mc->state > 0.5)
+  {
+    proporsional_effect *= (1 + mc->state);
+  }
   
   mc->input = proporsional_effect + integral_effect + derivative_effect;
 
@@ -55,7 +71,7 @@ void mc_send_input(MotorController *mc)
   enum JoystickDirection direction = NEUTRAL;
   char* dir_str = "NEUTRAL";
 
-  // TODO: Implement better way to determine direction
+
   if (mc->input > 0)
   {
     direction = RIGHT;
@@ -70,7 +86,6 @@ void mc_send_input(MotorController *mc)
   motor_set_direction(direction);
   
   uint32_t speed = abs((int32_t)(mc->input * 1000));
-  //printf("dir: %s, speed: %u\n\r", dir_str, speed);
   motor_set_speed(speed);
   return;
 }
@@ -87,6 +102,7 @@ void mc_measure_state(MotorController *mc)
 {
   uint16_t y = abs(encoder_read());
   float y_prepr = y/MAX_ENCODER_VALUE; //TODO: Maybe change to double if needed
+  //printf("y: %f\n\r", y_prepr);
   mc->state = y_prepr;
   return;
 }
@@ -94,6 +110,7 @@ void mc_measure_state(MotorController *mc)
 void mc_get_setpoint(MotorController *mc)
 {
   mc->setpoint = (float) recieved_can.byte[1] / 255;
+  mc->setpoint = mc->setpoint;
   return;
 }
 

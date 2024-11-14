@@ -92,6 +92,7 @@ struct CanMsg {
 };
 
 extern CanMsg recieved_can;
+extern CanMsg send_can;
 
 // Send a CAN message on the bus. 
 // Blocks if the bus does not receive the message (typically because one of the 

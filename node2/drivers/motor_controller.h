@@ -9,6 +9,7 @@
 
 #define MAX_ENCODER_VALUE 5580.0
 #define MIN_ENCODER_VALUE 0.0
+#define SAMPLES 5 
 
 typedef struct Pid_t
 {
@@ -22,7 +23,12 @@ typedef struct MotorController_t
   Pid pid;
 
   float setpoint;
+  float setpoint_prev[SAMPLES];
+  uint32_t setpoint_count;
+
   float state;
+  float state_prev[SAMPLES];
+  uint32_t state_count;
 
   float error;
   float error_prev;

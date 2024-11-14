@@ -24,6 +24,8 @@ struct OLEDPosition {
   uint8_t segment;
 };
 
+enum GameSate { MENU, PLAY };
+
 // struct OLEDUser {
 //   struct OLEDPosition position;
 //   struct ADCValues adc_values;
@@ -55,7 +57,7 @@ void OLED_Reset(struct OLEDPosition *position);
 
 void OLED_HighlightPage(struct OLEDPosition *position, uint8_t page);
 // TODO: Implenment
-void OLED_Home(struct OLEDPosition *position);
+void OLED_Home(struct OLEDPosition *position, enum GameSate *game_state);
 
 // TODO: Implenment
 void OLED_SetBrightness(struct OLEDPosition *position, uint8_t brightness);

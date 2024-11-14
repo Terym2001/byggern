@@ -26,14 +26,14 @@ void motor_set_speed(uint32_t speed)
 {
   uint32_t speed_abs = abs(speed);
   //printf("Speed: %i\n\r", speed);
-  if (speed_abs < 50)
+  if (speed_abs < 200)
   {
     speed_abs = 0;
   }
   if(speed_abs > 1000)
   {
     printf("Error speed to high\n\r");
-    speed_abs = 800;
+    speed_abs = 1000;
   }
 
   pwm_set_duty_cycle(speed_abs, PWM_MOTOR_CHANNEL);

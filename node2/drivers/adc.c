@@ -1,6 +1,8 @@
 #include "adc.h"
 #include "sam.h"
 
+extern lostGame;
+
 void  adc_init(){
     //reset ADC, might drop this
     REG_ADC_CR |= ADC_CR_SWRST; 
@@ -62,6 +64,7 @@ void ADC_Handler(void){
         printf("Sampled value: %d\n\r", sampledValue);
         printf("Ball missed \r\n");
         shouldCountMiss = 0;
+        lostGame = 1;
     }
     else if(sampledValue > ADC_HIGHTHRESHOLD){
         shouldCountMiss = 1;

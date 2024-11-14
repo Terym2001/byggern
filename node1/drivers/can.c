@@ -15,27 +15,29 @@ void CAN_Init(void)
   MCP2515_BitModify(MCP_CANCTRL, mask, data);
 }
 
-struct can_message CAN_Recieve() 
+uint8_t CAN_Recieve(struct can_message* msg) 
 {
-  struct can_message msg = {0};
-   
-  while (!(MCP2515_Read(MCP_CANINTF) & (1 << RX0IF))) {}
+  //while (!(MCP2515_Read(MCP_CANINTF) & (1 << RX0IF))) {}
+  if (!(MCP2515_Read(MCP_CANINTF) & (1 << RX0IF)))
+  {
+    return 0;
+  }
 
   uint8_t id_high = MCP2515_Read(MCP_RXB0SIDH);
   uint8_t id_low = (MCP2515_Read(MCP_RXB0SIDL) >> 5);
-  msg.id = (id_high << 3) | id_low; 
+  msg->id = (id_high << 3) | id_low; 
   
-  msg.length = (MCP2515_Read(RXB0DLC) & 0x0F);
+  msg->length = (MCP2515_Read(RXB0DLC) & 0x0F);
 
-  for(int i = 0; i < msg.length; i++)
+  for(int i = 0; i < msg->length; i++)
   {
-    msg.data[i] = MCP2515_Read(RXB0D0 + i);
+    msg->data[i] = MCP2515_Read(RXB0D0 + i);
   }
 
   //Reset the interrupt flag
   MCP2515_BitModify(MCP_CANINTF,0x03,0x00); 
 
-  return msg;
+  return 1;
 }
 
 void CAN_Send(struct can_message* msg, uint8_t msg_priority, uint8_t txBuffer) 

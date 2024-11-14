@@ -12,7 +12,7 @@ void servo_set_angle(enum JoystickDirection direction){
     pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL - 10, PWM_SERVO_CHANNEL);
     break;
   case PRESSED:
-    pio_clear_pin(PIOC, 14);
+    pio_clear_pin(PIOC, 16);
     return;
   case NEUTRAL:
     pwm_set_duty_cycle(DUTY_CYCLE_MIDDEL, PWM_SERVO_CHANNEL);
@@ -20,6 +20,6 @@ void servo_set_angle(enum JoystickDirection direction){
   default:
     break;
   }
-  pio_set_pin(PIOC, 14);
+  pio_set_pin(PIOC, 16);
   return;
 }

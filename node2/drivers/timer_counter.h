@@ -4,10 +4,9 @@
 //#include <stdio.h>
 #include <stdint.h>
 #include "sam.h"
+#include "motor_controller.h"
 #include "encoder.h"
 
-void tc_init(unsigned long period);
-
-void tc_set_custom(void (*ptr)(void));
+void tc_init(uint32_t channel, unsigned long period);
 
 #endif
