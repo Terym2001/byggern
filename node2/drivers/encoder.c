@@ -3,7 +3,6 @@
 void encoder_init(void)
 {
   // Enable timer counter clock
-  // maybe wird, maybe not
   PMC->PMC_PCER1 |= PMC_PCER1_PID33; // TC6
   
   TC2->TC_WPMR |= (0x54494D << RTC_WPMR_WPKEY_Pos);

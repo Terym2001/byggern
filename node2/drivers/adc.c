@@ -3,7 +3,7 @@
 
 extern lostGame;
 
-void  adc_init(){
+void adc_init(){
     //reset ADC, might drop this
     REG_ADC_CR |= ADC_CR_SWRST; 
 
@@ -13,7 +13,6 @@ void  adc_init(){
     
     REG_ADC_WPMR = ADC_WPMR_WPKEY(0x414443); //disable write protection
     REG_ADC_WPMR &= ~(ADC_WPMR_WPEN); //enable write protection
-    
     
     //enable clock and set clock frequency with prescaler
     REG_ADC_MR    |= ADC_MR_PRESCAL(32); //ADCClock = MCK / ( (PRESCAL+1) * 2 )
@@ -30,7 +29,6 @@ void  adc_init(){
     REG_ADC_MR &= ~(ADC_MR_TRGEN | ADC_MR_SLEEP | ADC_MR_LOWRES); 
 
     REG_ADC_MR |=  ADC_MR_FREERUN_ON; //set freerun mode on: always do ADC conversions continually 
-     
 
     //Comparison Event Interrupt Enable for channel 6
     REG_ADC_IER |= ADC_IER_COMPE;
@@ -42,9 +40,7 @@ void  adc_init(){
     //todo: check what format it takes the threshold in as.
     REG_ADC_CWR |= ADC_CWR_LOWTHRES(ADC_LOWTHRESHOLD); 
     REG_ADC_CWR |= ADC_CWR_HIGHTHRES(ADC_HIGHTHRESHOLD); 
-
 }   
-
 
 //This will now get called since interrupts are enabled for comparisons with sampled value below threshold
 void ADC_Handler(void){
@@ -52,13 +48,6 @@ void ADC_Handler(void){
         return;
     }
     uint16_t sampledValue = REG_ADC_LCDR;
-    // printf("Sampled value: %d\n\r", sampledValue);
-    // printf("sampled ADC value has gone below threshold \n\r");
-    // uint32_t flag2 = NVIC_GetPendingIRQ(ADC_IRQn);
-    // printf("ADC interrupt flag BEFORE: %d\n\r", flag2);
-    // //Read interrupt flag
-    // uint32_t flag = NVIC_GetPendingIRQ(ADC_IRQn);
-    // printf("ADC interrupt flag AFTER: %d\n\r", flag);
     static int shouldCountMiss  = 1;
     if(sampledValue < ADC_LOWTHRESHOLD && shouldCountMiss){
         printf("Sampled value: %d\n\r", sampledValue);

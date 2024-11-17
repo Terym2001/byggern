@@ -42,36 +42,6 @@ uint8_t CAN_Recieve(struct can_message* msg)
 
 void CAN_Send(struct can_message* msg, uint8_t msg_priority, uint8_t txBuffer) 
 {
-  // Map txBuffer to TXBnCTRL register
-  // uint8_t txbnctrl = 0;
-  // uint8_t txbnsidh = 0;
-  // uint8_t txbnsidl = 0;
-  // uint8_t txbndlc = 0;
-  // switch (txBuffer)
-  // {
-  //   case TXB0:
-  //     txbnctrl = TXB0CTRL;
-  //     txbnsidh = TXB0SIDH;
-  //     txbnsidl = TXB0SIDL;
-  //     txbndlc  = TXB0DLC;
-  //     break;
-  //   case TXB1:
-  //     txbnctrl = TXB1CTRL;
-  //     txbnsidh = TXB1SIDH;
-  //     txbnsidl = TXB1SIDL;
-  //     txbndlc  = TXB1DLC;
-  //     break;
-  //   case TXB2:
-  //     txbnctrl = TXB2CTRL;
-  //     txbnsidh = TXB2SIDH;
-  //     txbnsidl = TXB2SIDL;
-  //     txbndlc  =  TXB2DLC;
-  //     break;
-  //   default:
-  //     printf("Invalid txBuffer\n\r");
-  //     return;
-  // }
-
   // Set message priority
   // uint8_t mask = (1 << TXP1) | (1 << TXP0);
   // MCP2515_BitModify(txbnctrl, mask, msg_priority);
@@ -101,13 +71,11 @@ void CAN_Send(struct can_message* msg, uint8_t msg_priority, uint8_t txBuffer)
   {
     if (reg & (1 << TXERR))
     {
-      // TODO: Implement error handling
-      printf("Error \n\r");
+      printf("CAN_ERROR: msg error detected \n\r");
     }
     else if (reg & (1 << MLOA))
     {
-      // TODO: Implement msg lost handling
-      printf("MSG lost\n\r");
+      printf("CAN_ERROR: MSG lost\n\r");
     }
   }
 

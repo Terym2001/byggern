@@ -71,7 +71,6 @@ void mc_send_input(MotorController *mc)
   enum JoystickDirection direction = NEUTRAL;
   char* dir_str = "NEUTRAL";
 
-
   if (mc->input > 0)
   {
     direction = RIGHT;
@@ -102,7 +101,6 @@ void mc_measure_state(MotorController *mc)
 {
   uint16_t y = abs(encoder_read());
   float y_prepr = y/MAX_ENCODER_VALUE; //TODO: Maybe change to double if needed
-  //printf("y: %f\n\r", y_prepr);
   mc->state = y_prepr;
   return;
 }
@@ -114,13 +112,11 @@ void mc_get_setpoint(MotorController *mc)
   return;
 }
 
-
 void mc_motor_step(void)
 {
   motor.get_setpoint(&motor);
   motor.measure_state(&motor);
   motor.compute_error(&motor);
-  //printf("setpoint: %f2 State: %f2, Error: %f2\n\r", motor.setpoint, motor.state, motor.error);
   motor.compute_input(&motor);
   printf("r: %f, y: %f, u: %f\n\r", motor.setpoint, motor.state, motor.input);
   motor.send_input(&motor);

@@ -19,12 +19,12 @@ void MCP2515_Init(void)
   //Reset MCP2515
   MCP2515_Reset();
 
-  _delay_ms(1); // Mega viktig?
+  _delay_ms(1);
   
   uint8_t status = MCP2515_Read(MCP_CANSTAT);
   if ((status & MODE_MASK) != MODE_CONFIG) 
   {
-    printf("MCP2515 is NOT in configuration mode after reset!, CANSTAT: %x\n\t", status);
+    printf("MCP2515_ERROR: not in configuration mode after reset!, status: %x\n\r", status);
   }
 
   // Set the baud rate

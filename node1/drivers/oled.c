@@ -137,7 +137,7 @@ void OLED_LostScreen(struct OLEDPosition *position, enum GameSate *game_state)
   OLED_PrintString(position, "You lost! \n\n");
 
   char score[3];
-  sprintf(score, "%u", 200);
+  sprintf(score, "%u", msg_rec.data[1]);
   OLED_PrintString(position, "You got ");
   OLED_PrintString(position, score);
   OLED_PrintString(position, " points\n\n");
@@ -195,7 +195,6 @@ void OLED_LostScreen(struct OLEDPosition *position, enum GameSate *game_state)
 
 void OLED_Home(struct OLEDPosition *position, enum GameSate *game_state)
 {
-  printf("I main\n\r");
   OLED_ClearScreen(position);
 
   OLED_PrintString(position, "Play Game!\n\n");

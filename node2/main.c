@@ -31,11 +31,10 @@ int main()
   //Disable Watchdog Timer
   WDT->WDT_MR = WDT_MR_WDDIS;
 
-  //adc_init();
+  adc_init();
 
   uart_init(F_CPU, 9600);
 
-  // Initialize the PWM
   pwm_init();
 
   // Initialize the CAN
@@ -76,7 +75,7 @@ int main()
       send_can = (CanMsg){
         .id = 1,
         .length = 1,
-        .byte = {0,0,0,0,0,0,0,0} //Score should be sent here
+        .byte = {lostGame, score, 0, 0, 0, 0, 0, 0} //Score should be sent here
       };
       can_tx(send_can);
     }

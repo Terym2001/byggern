@@ -24,11 +24,11 @@ void pwm_init(void)
   PWM->PWM_CH_NUM[1].PWM_CMR &= ~(1 << 10);
 
   // Configuration of the period
-  PWM->PWM_CH_NUM[0].PWM_CPRD = CALCULATED_CPRD; // BUG: dont know real value
+  PWM->PWM_CH_NUM[0].PWM_CPRD = CALCULATED_CPRD; 
   PWM->PWM_CH_NUM[1].PWM_CPRD = CALCULATED_CPRD;
 
   // Configuration of the duty-cycle
-  PWM->PWM_CH_NUM[0].PWM_CDTY = (0 * CALCULATED_CPRD) / 1000; // BUG: dont know real value
+  PWM->PWM_CH_NUM[0].PWM_CDTY = (0 * CALCULATED_CPRD) / 1000;
   PWM->PWM_CH_NUM[1].PWM_CDTY = (75 * CALCULATED_CPRD) / 1000;
 
   // Enable of the PWM channels
@@ -65,7 +65,6 @@ void pwm_set_duty_cycle(uint16_t cycle_percentage, uint8_t channel)
 }
 
 void pwm_set_servo_angle(enum JoystickDirection direction){
-  //TODO: Change values after testing
   switch (direction)
   {
   case UP:

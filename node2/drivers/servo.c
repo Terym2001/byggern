@@ -2,7 +2,6 @@
 #include "pwm.h"
 
 void servo_set_angle(enum JoystickDirection direction){
-  //TODO: Change values after testing
   switch (direction)
   {
   case UP:
