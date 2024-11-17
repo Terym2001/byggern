@@ -14,8 +14,8 @@
 
 
 struct JoystickPositionPercent {
-  int16_t xPercent;
-  int16_t yPercent;
+  int8_t xPercent;
+  int8_t yPercent;
 };
 
 enum JoystickDirection { LEFT, RIGHT, UP, DOWN, PRESSED, NEUTRAL };
@@ -31,6 +31,11 @@ struct Joystick{
   enum JoystickDirection direction;
 };
 
+struct Slider {
+  uint8_t left;
+  uint8_t right;
+};
+
 void ADC_InitializeExternalClock(void);
 
 void ADC_Init(void);
@@ -38,6 +43,8 @@ void ADC_Init(void);
 struct Joystick ADC_InitJoystick(void);
 
 void ADC_Read(struct Joystick *joystick);
+
+void ADC_ReadSlider(struct Slider *slider);
 
 void ADC_ConvertToPercent(uint8_t xRaw, uint8_t yRaw, struct JoystickPositionPercent *Jpos);
 

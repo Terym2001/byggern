@@ -10,8 +10,8 @@ SOURCE_FILES := main.c \
 								$(DRIVER_DIR)/spi.c  \
 								$(DRIVER_DIR)/mcp2515.c  \
 								$(DRIVER_DIR)/can.c  \
-								# $(RESOURCES_DIR)/fonts.c \
-								# $(DRIVER_DIR)/oled.c \
+								$(RESOURCES_DIR)/fonts.c \
+								$(DRIVER_DIR)/oled.c \
 								# $(TEST_DIR)/sram_test.c \
 								# $(TEST_DIR)/can_test.c \
 

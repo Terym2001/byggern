@@ -12,7 +12,7 @@ struct can_message {
 
 void CAN_Init(void);
 
-struct can_message CAN_Recieve();
+uint8_t CAN_Recieve(struct can_message* msg);
 
 void CAN_Send(struct can_message* msg, uint8_t msg_priority, uint8_t txBuffer);
 

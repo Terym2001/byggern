@@ -14,7 +14,11 @@ SOURCE_FILES = \
 	drivers/can.c \
 	drivers/adc.c \
 	drivers/pwm.c \
-	drivers/servo.c
+	drivers/servo.c \
+	drivers/timer_counter.c \
+	drivers/encoder.c \
+	drivers/motor.c   \
+	drivers/motor_controller.c
 	#test/can_test.c \
 #	../path_to/uart.c \
 #   filename1.c \
