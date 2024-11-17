@@ -7,6 +7,8 @@
 #include "motor_controller.h"
 #include "encoder.h"
 
+extern uint8_t score;
+
 void tc_init(uint32_t channel, unsigned long period);
 
 #endif

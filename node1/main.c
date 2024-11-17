@@ -49,18 +49,19 @@ int main(void) {
         CAN_Send(&msg, 0, TXB0);
         _delay_ms(20);
 
-        //uint8_t status = CAN_Recieve(&msg_rec);
-        //if (status != 0)
-        //{
-        //  printf("Haha got message?\n\r");
-        //  break;
-        //}
-
-        // Get points
+        uint8_t status = CAN_Recieve(&msg_rec);
+        if (status != 0)
+        {
+          game_state = MENU; 
+          break;
+        }
         break;
 
       case MENU:
-
+        if (msg_rec.data[0] == 0x01)
+        {
+          OLED_LostScreen(&position, &game_state);
+        }
         break;
     }
   }

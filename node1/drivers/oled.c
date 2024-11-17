@@ -130,13 +130,18 @@ void OLED_HighlightPage(struct OLEDPosition *position, uint8_t page)
 
   return;
 }
-void OLED_SubScreen(struct OLEDPosition *position)
+void OLED_LostScreen(struct OLEDPosition *position, enum GameSate *game_state)
 {
   OLED_ClearScreen(position);
 
-  OLED_PrintString(position, "Some new string! \n\n");
-  OLED_PrintString(position, "Some other new string! \n\n");
-  OLED_PrintString(position, "Secret \n\n");
+  OLED_PrintString(position, "You lost! \n\n");
+
+  char score[3];
+  sprintf(score, "%u", 200);
+  OLED_PrintString(position, "You got ");
+  OLED_PrintString(position, score);
+  OLED_PrintString(position, " points\n\n");
+  OLED_PrintString(position, "Press here to go to menu! \n\n");
 
   OLED_GotoPage(position, 1);
 
@@ -144,7 +149,7 @@ void OLED_SubScreen(struct OLEDPosition *position)
   enum JoystickDirection direction = NEUTRAL;
 
   //Function pointer to start new sub-menu
-  void (*ChangeScreen)(struct OLEDPosition *position);
+  void (*ChangeScreen)(struct OLEDPosition *position, enum GameSate *game_state);
   ChangeScreen = NULL;
   while (1)
   {
@@ -169,16 +174,19 @@ void OLED_SubScreen(struct OLEDPosition *position)
         OLED_HighlightPage(position, position->page);
         break;
       case PRESSED:
-        ChangeScreen = OLED_Home;
-        printf("Changing back to Home \n\r");
-        _delay_ms(5000); //TODO: This can be removed when it checks btn
+        if (position->page == 5)
+        {
+          *game_state = MENU;
+          ChangeScreen = &OLED_Home;
+        }
       default:
         break;
     }
       // Call the function if the function pointer has been set
     if (ChangeScreen != NULL)
     {
-      ChangeScreen(position);  // Call OLED_SubScreen
+      printf("Changing screen\n\r");
+      ChangeScreen(position, game_state);  // Call OLED_SubScreen
       return;  // Exit the current loop after changing the screen
     }
     _delay_ms(500);
@@ -187,6 +195,7 @@ void OLED_SubScreen(struct OLEDPosition *position)
 
 void OLED_Home(struct OLEDPosition *position, enum GameSate *game_state)
 {
+  printf("I main\n\r");
   OLED_ClearScreen(position);
 
   OLED_PrintString(position, "Play Game!\n\n");
@@ -199,10 +208,12 @@ void OLED_Home(struct OLEDPosition *position, enum GameSate *game_state)
   enum JoystickDirection direction = NEUTRAL;
 
   //Function pointer to start new sub-menu
-  void (*ChangeScreen)(struct OLEDPosition *position);
+  void (*ChangeScreen)(struct OLEDPosition *position, enum GameSate *game_state);
   ChangeScreen = NULL;
+
   while (1)
   {
+    _delay_ms(500);
     ADC_Read(&joystick);       
     direction = ADC_GetJoystickDirection(&joystick); //TODO: Change name of adc_values 
     switch(direction)
@@ -221,7 +232,6 @@ void OLED_Home(struct OLEDPosition *position, enum GameSate *game_state)
         }
         OLED_HighlightPage(position, position->page);
         break;
-      //TODO:Implement so that this only happens when we are at correct page
       case PRESSED:
         if (position->page == 1)
         {
@@ -233,12 +243,11 @@ void OLED_Home(struct OLEDPosition *position, enum GameSate *game_state)
         break;
     }
     // Call the function if the function pointer has been set
-    //if (ChangeScreen != NULL)
-    //{
-    //  ChangeScreen(position);  // Call OLED_SubScreen
-    //  return;  // Exit the current loop after changing the screen
-    //}
-    _delay_ms(500);
+    if (ChangeScreen != NULL)
+    {
+      ChangeScreen(position, game_state);  // Call OLED_SubScreen
+      return;  // Exit the current loop after changing the screen
+    }
   }
   return;
 }

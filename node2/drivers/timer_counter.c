@@ -76,7 +76,7 @@ void TC0_Handler(void)
 
 void TC1_Handler(void)
 {
-  printf("heihei\n\r");
+  score += 1;
 
   uint32_t status = REG_TC0_SR1;
   NVIC_ClearPendingIRQ(TC1_IRQn);

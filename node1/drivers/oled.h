@@ -19,6 +19,9 @@
 
 #define FONT_OFFSET 32
 
+
+extern struct can_message msg_rec;
+
 struct OLEDPosition {
   uint8_t page;
   uint8_t segment;
@@ -51,15 +54,14 @@ void OLED_PrintChar(struct OLEDPosition *position, char chr);
 
 void OLED_PrintString(struct OLEDPosition *position, char* string);
 
-void OLED_SubScreen(struct OLEDPosition *position);
-// TODO: Implenment
+void OLED_LostScreen(struct OLEDPosition *position, enum GameSate *game_state);
+
 void OLED_Reset(struct OLEDPosition *position);
 
 void OLED_HighlightPage(struct OLEDPosition *position, uint8_t page);
-// TODO: Implenment
+
 void OLED_Home(struct OLEDPosition *position, enum GameSate *game_state);
 
-// TODO: Implenment
 void OLED_SetBrightness(struct OLEDPosition *position, uint8_t brightness);
 
 #endif

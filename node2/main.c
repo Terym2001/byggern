@@ -21,6 +21,7 @@ CanMsg send_can;
 MotorController motor = {0};
 
 bool lostGame = false;
+uint8_t score = 0;
 
 int main()
 {
@@ -59,7 +60,7 @@ int main()
 
   encoder_init();
   tc_init(0, F_CPU / (1000 * 500));
-  //tc_init(1, F_CPU / (1000));
+  tc_init(1, F_CPU / (1000));
 
   while (1)
   {
@@ -69,15 +70,15 @@ int main()
       direction = (enum JoystickDirection) recieved_can.byte[0];
       servo_set_angle(direction);
     }
-    //if(lostGame){
-    //  printf("You lost the game \n\r");\
-    //  //Send a message to node 1 that the game is lost
-    //  send_can = (CanMsg){
-    //    .id = 1,
-    //    .length = 1,
-    //    .byte = {0,0,0,0,0,0,0,0} //Score should be sent here
-    //  };
-    //  can_tx(send_can);
-    //}
+    if(lostGame){
+      printf("You lost the game \n\r");\
+      //Send a message to node 1 that the game is lost
+      send_can = (CanMsg){
+        .id = 1,
+        .length = 1,
+        .byte = {0,0,0,0,0,0,0,0} //Score should be sent here
+      };
+      can_tx(send_can);
+    }
   }
 }
