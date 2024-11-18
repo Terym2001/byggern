@@ -3,6 +3,9 @@
 #include "drivers/can.h"
 #include "drivers/oled.h"
 
+struct can_message msg_rec;
+
+#define BUFFER_SIZE 10
 
 int main(void) {
   // Initialize uart with baud rate and frameformat
@@ -24,12 +27,14 @@ int main(void) {
   msg.id = 0x0F;
   msg.length = 0x08;
 
-  struct can_message msg_rec;
+  // Define buffer for computing the moving average of joystick.xRaw
+  uint8_t buffer[BUFFER_SIZE] = {0};
+  uint8_t buffer_index = 0;
+  uint16_t sum = 0;
 
   // OLED commands
   struct OLEDPosition position = {0, 0};
   OLED_Init(&position);
-  OLED_ClearScreen(&position);
   OLED_Home(&position, &game_state);
 
   while(1)
@@ -41,8 +46,14 @@ int main(void) {
         joystick_percent = ADC_GetJoystickPercent();
         ADC_ReadSlider(&slider);
 
+        // Comute moving average
+        sum -= buffer[buffer_index];
+        buffer[buffer_index] = joystick.xRaw;
+        sum += buffer[buffer_index];
+        buffer_index = (buffer_index + 1) % BUFFER_SIZE;
+
         msg.data[0] = direction; 
-        msg.data[1] = joystick.xRaw;
+        msg.data[1] = sum / BUFFER_SIZE;
         msg.data[2] = joystick.yRaw;
         printf("x; %u\n\r", joystick.xRaw);
 

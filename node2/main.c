@@ -31,7 +31,7 @@ int main()
   //Disable Watchdog Timer
   WDT->WDT_MR = WDT_MR_WDDIS;
 
-  adc_init();
+  //adc_init();
 
   uart_init(F_CPU, 9600);
 
@@ -55,7 +55,7 @@ int main()
   pio_set_pin(PIOC, 16);
 
   motor_init();
-  motor_controller_init(&motor, 0.5, 0.2, 0.0, 0.0); //Period T = 1us I think 
+  motor_controller_init(&motor, 1.0, 0.2, 0.0, 0.0); //Period T = 1us I think 
 
   encoder_init();
   tc_init(0, F_CPU / (1000 * 500));
@@ -67,6 +67,7 @@ int main()
     if (status != 0)
     {
       direction = (enum JoystickDirection) recieved_can.byte[0];
+      //printf("%u\n\r", direction);
       servo_set_angle(direction);
     }
     if(lostGame){

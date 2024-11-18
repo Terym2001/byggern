@@ -19,7 +19,6 @@
 
 #define FONT_OFFSET 32
 
-
 extern struct can_message msg_rec;
 
 struct OLEDPosition {
